@@ -124,21 +124,21 @@ class ScrapingService:
             job.update(self.job_stats[job_id])
         
         return job
-    
+        
     async def _execute_job(self, job_id: str):
         """Execute a scraping job"""
         db = database.get_database()
         jobs_collection = db.scraping_jobs
         businesses_collection = db.businesses
         progress_collection = db.scraping_progress
-        
+
         try:
             # Get job details
             job = await jobs_collection.find_one({"_id": ObjectId(job_id)})
             if not job:
                 logger.error(f"Job {job_id} not found")
                 return
-            
+
             self.job_stats[job_id] = {
                 "current_domain": None,
                 "current_city": None,
@@ -147,11 +147,11 @@ class ScrapingService:
                 "cities_completed": 0,
                 "start_time": time.time()
             }
-            
+
             # Create aiohttp session with timeout and concurrency limits
             timeout = aiohttp.ClientTimeout(total=30)
             connector = aiohttp.TCPConnector(limit=job["concurrent_requests"])
-            
+
             async with aiohttp.ClientSession(timeout=timeout, connector=connector) as session:
                 for domain in job["domains"]:
                     # Check if job is still running
@@ -159,94 +159,143 @@ class ScrapingService:
                     if current_job["status"] != ScrapingStatus.RUNNING:
                         logger.info(f"Job {job_id} stopped (status: {current_job['status']})")
                         break
-                    
+
                     self.job_stats[job_id]["current_domain"] = domain
                     await jobs_collection.update_one(
                         {"_id": ObjectId(job_id)},
                         {"$set": {"current_domain": domain}}
                     )
-                    
+
                     logger.info(f"Scraping domain: {domain}")
                     scraper = get_scraper(domain, session)
-                    
+
                     # Get all cities for this domain
                     cities = await scraper.get_cities()
-                    await jobs_collection.update_one(
-                        {"_id": ObjectId(job_id)},
-                        {"$inc": {"total_cities": len(cities)}}
-                    )
                     
-                    # Process each city
-                    for city in cities:
-                        # Check job status again
+                    # Only update total_cities if we haven't done this before (for new jobs)
+                    if job.get("total_cities", 0) == 0:
+                        await jobs_collection.update_one(
+                            {"_id": ObjectId(job_id)},
+                            {"$set": {"total_cities": len(cities)}}
+                        )
+
+                    # 🚀 RESUME LOGIC: Start from where we left off
+                    start_city_index = 0
+                    start_page = 1
+                    
+                    # If resuming, find where we stopped
+                    current_city = job.get("current_city")
+                    current_page = job.get("current_page", 1)
+                    
+                    if current_city:
+                        # Find the index of the current city
+                        for i, city in enumerate(cities):
+                            if city.name == current_city:
+                                start_city_index = i
+                                start_page = current_page
+                                logger.info(f"🔄 RESUMING from city '{current_city}' (index {i}) at page {current_page}")
+                                break
+                        else:
+                            # City not found, start from beginning
+                            logger.warning(f"Current city '{current_city}' not found in cities list, starting from beginning")
+
+                    # Process each city starting from resume point
+                    for city_idx, city in enumerate(cities[start_city_index:], start=start_city_index):                        # Check job status again
                         current_job = await jobs_collection.find_one({"_id": ObjectId(job_id)})
                         if current_job["status"] != ScrapingStatus.RUNNING:
                             break
-                        
+
                         self.job_stats[job_id]["current_city"] = city.name
                         await jobs_collection.update_one(
                             {"_id": ObjectId(job_id)},
                             {"$set": {"current_city": city.name}}
                         )
-                        
-                        logger.info(f"Scraping city: {city.name} ({city.business_count} businesses)")
-                        
-                        # Process pages for this city
-                        page = 1
+
+                        logger.info(f"Scraping city: {city.name} ({city.business_count} businesses) - City {city_idx + 1}/{len(cities)}")
+
+                        # 🚀 RESUME LOGIC: Start from correct page
+                        initial_page = start_page if city_idx == start_city_index else 1
+                        if initial_page > 1:
+                            logger.info(f"🔄 RESUMING at page {initial_page} for city '{city.name}'")
+
+                        # Process pages for this city starting from resume point
+                        page = initial_page
                         while True:
                             # Check job status
                             current_job = await jobs_collection.find_one({"_id": ObjectId(job_id)})
                             if current_job["status"] != ScrapingStatus.RUNNING:
                                 break
-                            
+
                             self.job_stats[job_id]["current_page"] = page
                             await jobs_collection.update_one(
                                 {"_id": ObjectId(job_id)},
                                 {"$set": {"current_page": page}}
                             )
-                            
+
                             # Get business listings for this page
                             business_urls, has_next = await scraper.get_business_listings(city.url, page)
-                            
+
                             if not business_urls:
                                 logger.warning(f"No businesses found on page {page} of {city.name}")
                                 break
-                            
-                            # Update total businesses count
+
+                            # Update total businesses count (track URLs found, not processed)
                             await jobs_collection.update_one(
                                 {"_id": ObjectId(job_id)},
                                 {"$inc": {"total_businesses": len(business_urls)}}
                             )
-                            
+
                             logger.info(f"Found {len(business_urls)} businesses on page {page} of {city.name} - starting immediate scraping")
-                            
-                            # Scrape each business immediately with semaphore for concurrency control
-                            semaphore = asyncio.Semaphore(job["concurrent_requests"])
-                            tasks = []
-                            
+
+                            # 🎯 SMART DUPLICATE CHECKING: Filter out already processed businesses
+                            new_business_urls = []
                             for business_url in business_urls:
-                                task = asyncio.create_task(
-                                    self._scrape_business_with_semaphore(
-                                        semaphore, scraper, business_url, 
-                                        businesses_collection, job_id, job["request_delay"]
+                                # Check if business already exists in database
+                                existing = await businesses_collection.find_one({"page_url": business_url})
+                                if not existing:
+                                    new_business_urls.append(business_url)
+                                else:
+                                    logger.debug(f"⏭️  Skipping existing business: {business_url}")
+
+                            logger.info(f"📊 Page {page}: {len(business_urls)} total URLs, {len(new_business_urls)} new businesses to scrape")
+
+                            if new_business_urls:
+                                # Scrape only new businesses with semaphore for concurrency control
+                                semaphore = asyncio.Semaphore(job["concurrent_requests"])
+                                tasks = []
+
+                                for business_url in new_business_urls:
+                                    task = asyncio.create_task(
+                                        self._scrape_business_with_semaphore(
+                                            semaphore, scraper, business_url, 
+                                            businesses_collection, job_id, job["request_delay"]
+                                        )
                                     )
-                                )
-                                tasks.append(task)
-                            
-                            # Wait for all businesses on this page to be scraped
-                            results = await asyncio.gather(*tasks, return_exceptions=True)
-                            
-                            # Count successful scrapes
-                            successful_scrapes = sum(1 for r in results if isinstance(r, BusinessData))
-                            self.job_stats[job_id]["businesses_scraped"] += successful_scrapes
-                            
-                            await jobs_collection.update_one(
-                                {"_id": ObjectId(job_id)},
-                                {"$inc": {"businesses_scraped": successful_scrapes}}
-                            )
-                            
-                            logger.info(f"Completed page {page} of {city.name}: scraped {successful_scrapes}/{len(business_urls)} businesses")
-                            
+                                    tasks.append(task)
+
+                                # Wait for all new businesses on this page to be scraped
+                                results = await asyncio.gather(*tasks, return_exceptions=True)
+
+                                # 🎯 ACCURATE COUNTING: Only count actual successful database saves
+                                successful_saves = 0
+                                for result in results:
+                                    if isinstance(result, BusinessData):
+                                        successful_saves += 1
+                                    elif isinstance(result, Exception):
+                                        logger.error(f"Task failed with exception: {result}")
+
+                                # Update job counter only with actual saves
+                                if successful_saves > 0:
+                                    self.job_stats[job_id]["businesses_scraped"] += successful_saves
+                                    await jobs_collection.update_one(
+                                        {"_id": ObjectId(job_id)},
+                                        {"$inc": {"businesses_scraped": successful_saves}}
+                                    )
+
+                                logger.info(f"✅ Page {page} of {city.name}: successfully saved {successful_saves}/{len(new_business_urls)} new businesses")
+                            else:
+                                logger.info(f"⏭️  Page {page} of {city.name}: all businesses already exist, skipping")
+
                             # Log progress
                             await progress_collection.insert_one({
                                 "job_id": job_id,
@@ -254,19 +303,23 @@ class ScrapingService:
                                 "city": city.name,
                                 "page": page,
                                 "businesses_found": len(business_urls),
-                                "businesses_scraped": successful_scrapes,
+                                "new_businesses": len(new_business_urls),
+                                "businesses_scraped": successful_saves if new_business_urls else 0,
                                 "timestamp": datetime.utcnow()
                             })
-                            
+
                             # Move to next page if available
                             if not has_next:
-                                logger.info(f"Completed all pages for {city.name}")
+                                logger.info(f"✅ Completed all pages for {city.name}")
                                 break
                             page += 1
-                            
+
                             # Small delay between pages to be respectful
                             await asyncio.sleep(job["request_delay"])
-                        
+
+                        # Reset start_page for next city
+                        start_page = 1
+
                         # Mark city as completed
                         self.job_stats[job_id]["cities_completed"] += 1
                         await jobs_collection.update_one(
@@ -363,16 +416,8 @@ class ScrapingService:
                 existing = await collection.find_one({"page_url": business_url})
                 if existing:
                     logger.debug(f"Business already exists: {business_url}")
-                    # Return a mock BusinessData object to ensure it's counted in progress
-                    return BusinessData(
-                        title=existing.get('title', ''),
-                        name=existing.get('name', ''),
-                        country=existing.get('country', ''),
-                        city=existing.get('city', ''),
-                        category=existing.get('category', ''),
-                        page_url=business_url,
-                        domain=existing.get('domain', '')
-                    )
+                    # Return None to indicate no new business was scraped (don't count as success)
+                    return None
                 
                 # Scrape business details
                 logger.debug(f"Starting detail scraping for: {business_url}")

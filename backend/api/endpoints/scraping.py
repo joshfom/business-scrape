@@ -162,17 +162,26 @@ async def get_dashboard_stats():
         # Count total businesses
         total_businesses = await businesses_collection.count_documents({})
         
-        # Count businesses scraped today
+        # Count businesses scraped today - handle missing scraped_at field gracefully
         today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-        businesses_today = await businesses_collection.count_documents({
-            "scraped_at": {"$gte": today}
-        })
+        try:
+            businesses_today = await businesses_collection.count_documents({
+                "scraped_at": {"$gte": today}
+            })
+        except Exception:
+            # If scraped_at field doesn't exist, fallback to 0
+            businesses_today = 0
         
-        # Get last scrape time
-        last_business = await businesses_collection.find_one(
-            {}, sort=[("scraped_at", -1)]
-        )
-        last_scrape = last_business["scraped_at"] if last_business else None
+        # Get last scrape time - handle missing field gracefully
+        try:
+            last_business = await businesses_collection.find_one(
+                {"scraped_at": {"$exists": True}}, 
+                sort=[("scraped_at", -1)]
+            )
+            last_scrape = last_business["scraped_at"] if last_business else None
+        except Exception:
+            # If scraped_at field doesn't exist, fallback to None
+            last_scrape = None
         
         # Count configured domains
         pipeline = [
@@ -324,7 +333,7 @@ async def get_available_domains():
             {'domain': 'https://kenyayp.com', 'country': 'Kenya'},
             {'domain': 'https://libyayp.com', 'country': 'Libya'},
             {'domain': 'https://moroccoyp.com', 'country': 'Morocco'},
-            {'domain': 'https://nigeriayp.com', 'country': 'Nigeria'},
+            {'domain': 'https://www.businesslist.com.ng/', 'country': 'Nigeria'},
             {'domain': 'https://southafricayp.com', 'country': 'South Africa'},
             {'domain': 'https://sudanyp.com', 'country': 'Sudan'},
             {'domain': 'https://tunisiayp.com', 'country': 'Tunisia'},
