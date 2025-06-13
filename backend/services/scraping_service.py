@@ -86,7 +86,43 @@ class ScrapingService:
     
     async def resume_job(self, job_id: str) -> bool:
         """Resume a paused job"""
-        return await self.start_job(job_id)
+        if job_id in self.active_jobs:
+            logger.warning(f"Job {job_id} is already running")
+            return False
+        
+        db = database.get_database()
+        jobs_collection = db.scraping_jobs
+        progress_collection = db.scraping_progress
+        
+        # Get the most recent progress record to ensure accurate resumption
+        latest_progress = await progress_collection.find_one(
+            {"job_id": job_id},
+            sort=[("timestamp", -1)]  # Sort by timestamp descending to get the most recent
+        )
+        
+        # Update job status and maintain the current_city and current_page values
+        update_data = {
+            "status": ScrapingStatus.RUNNING,
+            "resumed_at": datetime.utcnow()
+        }
+        
+        # If we found progress records, use them to set the exact resume point
+        if latest_progress:
+            update_data["current_city"] = latest_progress.get("city")
+            update_data["current_page"] = latest_progress.get("page", 1)
+            logger.info(f"Found resume point at city '{latest_progress.get('city')}', page {latest_progress.get('page', 1)}")
+        
+        await jobs_collection.update_one(
+            {"_id": ObjectId(job_id)},
+            {"$set": update_data}
+        )
+        
+        # Start the scraping task
+        task = asyncio.create_task(self._execute_job(job_id))
+        self.active_jobs[job_id] = task
+        
+        logger.info(f"Resumed scraping job {job_id}")
+        return True
     
     async def cancel_job(self, job_id: str) -> bool:
         """Cancel a job"""
@@ -187,17 +223,48 @@ class ScrapingService:
                     current_city = job.get("current_city")
                     current_page = job.get("current_page", 1)
                     
+                    # Check if we're resuming from a previous run
+                    is_resuming = job.get("status") == ScrapingStatus.RUNNING and job.get("resumed_at")
+                    
+                    # If job was previously running and has progress info, try to resume
                     if current_city:
                         # Find the index of the current city
                         for i, city in enumerate(cities):
                             if city.name == current_city:
                                 start_city_index = i
+                                
+                                # When resuming, start from current_page (not current_page+1)
+                                # This is because current_page points to the next page that needs processing
                                 start_page = current_page
-                                logger.info(f"🔄 RESUMING from city '{current_city}' (index {i}) at page {current_page}")
+                                
+                                logger.info(f"🔄 RESUMING from city '{current_city}' (index {i}) at page {start_page}")
                                 break
                         else:
                             # City not found, start from beginning
                             logger.warning(f"Current city '{current_city}' not found in cities list, starting from beginning")
+                            
+                    # Double-check with progress collection to find the most accurate resume point
+                    if is_resuming:
+                        # Get most recent progress record
+                        latest_progress = await progress_collection.find_one(
+                            {"job_id": job_id},
+                            sort=[("timestamp", -1)]
+                        )
+                        
+                        if latest_progress:
+                            latest_city = latest_progress.get("city")
+                            latest_page = latest_progress.get("page", 1)
+                            
+                            # Find city index
+                            for i, city in enumerate(cities):
+                                if city.name == latest_city:
+                                    # Only override if this record is more recent
+                                    if latest_progress.get("timestamp") > job.get("last_progress_timestamp", datetime.min):
+                                        start_city_index = i
+                                        # Resume from the NEXT page since this one was completed
+                                        start_page = latest_page + 1  
+                                        logger.info(f"📊 Found more recent progress record: city '{latest_city}', resuming from page {start_page}")
+                                    break
 
                     # Process each city starting from resume point
                     for city_idx, city in enumerate(cities[start_city_index:], start=start_city_index):                        # Check job status again
@@ -226,11 +293,8 @@ class ScrapingService:
                             if current_job["status"] != ScrapingStatus.RUNNING:
                                 break
 
+                            # First update just in-memory stats
                             self.job_stats[job_id]["current_page"] = page
-                            await jobs_collection.update_one(
-                                {"_id": ObjectId(job_id)},
-                                {"$set": {"current_page": page}}
-                            )
 
                             # Get business listings for this page
                             business_urls, has_next = await scraper.get_business_listings(city.url, page)
@@ -296,8 +360,8 @@ class ScrapingService:
                             else:
                                 logger.info(f"⏭️  Page {page} of {city.name}: all businesses already exist, skipping")
 
-                            # Log progress
-                            await progress_collection.insert_one({
+                            # Log progress and update database with current position AFTER processing the page
+                            progress_data = {
                                 "job_id": job_id,
                                 "domain": domain,
                                 "city": city.name,
@@ -306,13 +370,36 @@ class ScrapingService:
                                 "new_businesses": len(new_business_urls),
                                 "businesses_scraped": successful_saves if new_business_urls else 0,
                                 "timestamp": datetime.utcnow()
-                            })
+                            }
+                            
+                            # Save progress to the progress collection
+                            await progress_collection.insert_one(progress_data)
+                            
+                            # Update job document with current position AFTER processing the page
+                            # This ensures we'll resume from the next page, not repeat this page
+                            await jobs_collection.update_one(
+                                {"_id": ObjectId(job_id)},
+                                {"$set": {
+                                    "current_city": city.name,
+                                    "current_page": page,
+                                    "last_progress_timestamp": datetime.utcnow()
+                                }}
+                            )
 
                             # Move to next page if available
                             if not has_next:
                                 logger.info(f"✅ Completed all pages for {city.name}")
                                 break
+                                
+                            # Increment page number for next iteration
                             page += 1
+                            
+                            # When a page is completed, update the job record to point to the NEXT page
+                            # This ensures that if we resume, we start with the next unprocessed page
+                            await jobs_collection.update_one(
+                                {"_id": ObjectId(job_id)},
+                                {"$set": {"current_page": page}}
+                            )
 
                             # Small delay between pages to be respectful
                             await asyncio.sleep(job["request_delay"])
