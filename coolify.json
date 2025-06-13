@@ -1,0 +1,14 @@
+{
+  "type": "docker-compose",
+  "dockerComposeFile": "docker-compose.coolify.yml",
+  "services": [
+    {
+      "name": "backend",
+      "domains": ["business-scraper.coolify.app"]
+    },
+    {
+      "name": "frontend",
+      "domains": ["business-scraper.coolify.app"]
+    }
+  ]
+}
