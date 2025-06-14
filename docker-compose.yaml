@@ -9,7 +9,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: business-scraper-backend
     restart: unless-stopped
     environment:
       - MONGODB_URI=mongodb://root:77T87Tjn62LDdS5Bq9bY52FGxDBdXfEmJS1cj69elnhQBsRj7BsAnr3SKQF77oot@fo8g4g0w8gcc8k44s8s4gsks:27017/?directConnection=true
@@ -26,16 +25,17 @@ services:
       dockerfile: Dockerfile.frontend
       args:
         - REACT_APP_API_URL=/api
-    container_name: business-scraper-frontend
     restart: unless-stopped
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     depends_on:
       - backend
     networks:
       - business-scraper
     labels:
       - "coolify.managed=true"
+      - "coolify.type=application"
+      - "coolify.port=80"
 
 networks:
   business-scraper:
