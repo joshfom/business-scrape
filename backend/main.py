@@ -50,5 +50,26 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy", "service": "business-scraper-api"}
+    """Simple health check endpoint that doesn't depend on database"""
+    return {"status": "healthy", "service": "business-scraper-api", "timestamp": "2024-06-14"}
+
+@app.get("/health/full")
+async def full_health_check():
+    """Full health check including database connectivity"""
+    try:
+        # Test database connection
+        await database.client.admin.command('ping')
+        return {
+            "status": "healthy", 
+            "service": "business-scraper-api",
+            "database": "connected",
+            "timestamp": "2024-06-14"
+        }
+    except Exception as e:
+        return {
+            "status": "degraded",
+            "service": "business-scraper-api", 
+            "database": "disconnected",
+            "error": str(e),
+            "timestamp": "2024-06-14"
+        }
