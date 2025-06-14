@@ -1,0 +1,79 @@
+version: '3.8'
+
+# Standard Docker Compose file for Coolify
+# Renamed from docker-compose.coolify.yml for better Coolify compatibility
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: business-scraper-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: business_scraper
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/business_scraper --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - business-scraper
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: business-scraper-backend
+    restart: unless-stopped
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/business_scraper
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - business-scraper
+
+  # Frontend (Main service for Coolify)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        - REACT_APP_API_URL=/api
+    container_name: business-scraper-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - business-scraper
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  business-scraper:
+    driver: bridge
