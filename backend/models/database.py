@@ -11,14 +11,16 @@ class Database:
     @classmethod
     async def connect_db(cls):
         """Create database connection"""
-        cls.client = AsyncIOMotorClient(settings.MONGODB_URL)
+        # Use MONGODB_URI which supports full connection strings including database name
+        mongodb_uri = settings.MONGODB_URI
+        cls.client = AsyncIOMotorClient(mongodb_uri)
         
         # Test connection
         try:
             await cls.client.admin.command('ping')
-            logger.info("Successfully connected to MongoDB")
+            logger.info(f"Successfully connected to MongoDB at {mongodb_uri}")
         except Exception as e:
-            logger.error(f"Failed to connect to MongoDB: {e}")
+            logger.error(f"Failed to connect to MongoDB at {mongodb_uri}: {e}")
             raise
             
         # Create indexes
@@ -34,7 +36,7 @@ class Database:
     @classmethod
     async def _create_indexes(cls):
         """Create database indexes for performance"""
-        db = cls.client[settings.DATABASE_NAME]
+        db = cls.get_database()
         
         # Business data indexes
         businesses = db.businesses
@@ -59,6 +61,13 @@ class Database:
     @classmethod
     def get_database(cls):
         """Get database instance"""
+        # Extract database name from URI or use default
+        if '/' in settings.MONGODB_URI and settings.MONGODB_URI.count('/') >= 3:
+            # Extract database name from URI like mongodb://host:port/dbname
+            db_name = settings.MONGODB_URI.split('/')[-1].split('?')[0]
+            if db_name:
+                return cls.client[db_name]
+        # Fallback to configured database name
         return cls.client[settings.DATABASE_NAME]
 
 # Global database instance

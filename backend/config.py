@@ -3,8 +3,9 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    # Database
-    MONGODB_URL: str = "mongodb://localhost:27017"
+    # Database - supports both MongoDB URI and individual components
+    MONGODB_URI: str = os.getenv("MONGODB_URI", os.getenv("DATABASE_URL", "mongodb://localhost:27017/business_scraper"))
+    MONGODB_URL: str = "mongodb://localhost:27017"  # Deprecated, use MONGODB_URI
     DATABASE_NAME: str = "business_scraper"
     
     # Redis for task queue
