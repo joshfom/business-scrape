@@ -35,7 +35,13 @@ RUN apk add --no-cache curl
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Copy custom Nginx configuration
+RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Remove any default nginx configs and verify our files
+RUN rm -f /etc/nginx/conf.d/default.conf.dpkg-dist && \
+    ls -la /usr/share/nginx/html/ && \
+    ls -la /etc/nginx/conf.d/
 
 # Expose port
 EXPOSE 80
