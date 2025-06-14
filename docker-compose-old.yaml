@@ -1,9 +1,28 @@
 version: '3.8'
 
-# Simplified Docker Compose using External MongoDB
-# No local MongoDB container needed
+# Standard Docker Compose file for Coolify
+# Renamed from docker-compose.coolify.yml for better Coolify compatibility
 
 services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: business-scraper-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: business_scraper
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/business_scraper --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - business-scraper
+
   # Backend API
   backend:
     build:
@@ -12,8 +31,11 @@ services:
     container_name: business-scraper-backend
     restart: unless-stopped
     environment:
-      - MONGODB_URI=mongodb://root:77T87Tjn62LDdS5Bq9bY52FGxDBdXfEmJS1cj69elnhQBsRj7BsAnr3SKQF77oot@fo8g4g0w8gcc8k44s8s4gsks:27017/?directConnection=true
+      - MONGODB_URI=mongodb://mongodb:27017/business_scraper
       - PYTHONUNBUFFERED=1
+    depends_on:
+      mongodb:
+        condition: service_healthy
     volumes:
       - ./logs:/app/logs
     healthcheck:
@@ -47,8 +69,10 @@ services:
       start_period: 30s
     networks:
       - business-scraper
-    labels:
-      - "coolify.managed=true"
+
+volumes:
+  mongodb_data:
+    driver: local
 
 networks:
   business-scraper:

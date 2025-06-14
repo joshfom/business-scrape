@@ -1,7 +1,7 @@
 version: '3.8'
 
-# Simplified Docker Compose using External MongoDB
-# No local MongoDB container needed
+# Simplified Docker Compose for External Database
+# Uses external MongoDB/PostgreSQL service instead of local container
 
 services:
   # Backend API
