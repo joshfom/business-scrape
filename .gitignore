@@ -98,6 +98,9 @@ env/
 venv/
 ENV/
 env.bak/
+
+# Allow frontend .env for build configuration
+!frontend/.env
 venv.bak/
 
 # Spyder project settings
@@ -200,6 +203,9 @@ dist
 # Gatsby files
 .cache/
 public
+
+# Allow frontend public directory
+!frontend/public/
 
 # Storybook build outputs
 .out

@@ -14,7 +14,9 @@ RUN npm ci --only=production
 COPY frontend/src ./src
 COPY frontend/public ./public
 COPY frontend/tsconfig.json ./
-COPY frontend/.env ./
+
+# Copy .env if it exists (optional)
+COPY frontend/.env* ./
 
 # Set build argument for API URL
 ARG REACT_APP_API_URL=/api
