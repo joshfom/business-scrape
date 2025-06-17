@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -36,6 +37,7 @@ import { businessAPI } from '../api';
 import { Business } from '../types';
 
 export default function Businesses() {
+  const [searchParams] = useSearchParams();
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +46,7 @@ export default function Businesses() {
     domain: '',
     city: '',
     category: '',
+    job_id: searchParams.get('job_id') || '',
   });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -74,11 +77,14 @@ export default function Businesses() {
       };
       
       const response = await businessAPI.listBusinesses(params);
-      setBusinesses(response.data);
+      // The API returns data directly, not in a 'data' property
+      const businessData = Array.isArray(response.data) ? response.data : (response.data as any)?.data || [];
+      setBusinesses(businessData);
       
-      // Calculate total pages (this is a simplified approach)
-      // In a real app, you'd want the API to return total count
-      setTotalPages(Math.max(1, Math.ceil(response.data.length / ITEMS_PER_PAGE)));
+      // Get total count for better pagination
+      const totalResponse = await businessAPI.getBusinessStats();
+      const totalCount = totalResponse.data?.total_businesses || businessData.length;
+      setTotalPages(Math.max(1, Math.ceil(totalCount / ITEMS_PER_PAGE)));
     } catch (err) {
       setError('Failed to fetch businesses');
       console.error('Businesses error:', err);
@@ -126,6 +132,7 @@ export default function Businesses() {
   };
 
   const handleViewDetails = (business: Business) => {
+    console.log('Viewing business details:', business); // Debug log
     setSelectedBusiness(business);
     setDetailsOpen(true);
   };
@@ -170,6 +177,18 @@ export default function Businesses() {
               }}
               sx={{ minWidth: 200 }}
             />
+
+            {filters.job_id && (
+              <TextField
+                label="Job ID"
+                variant="outlined"
+                size="small"
+                value={filters.job_id}
+                onChange={(e) => handleFilterChange('job_id', e.target.value)}
+                sx={{ minWidth: 200 }}
+                helperText="Showing data for specific job"
+              />
+            )}
             
             <FormControl size="small" sx={{ minWidth: 150 }}>
               <InputLabel>Domain</InputLabel>
@@ -181,7 +200,7 @@ export default function Businesses() {
                 <MenuItem value="">All Domains</MenuItem>
                 {uniqueValues.domains.map((domain) => (
                   <MenuItem key={domain} value={domain}>
-                    {new URL(domain).hostname}
+                    {domain.includes('://') ? new URL(domain).hostname : domain}
                   </MenuItem>
                 ))}
               </Select>
@@ -295,7 +314,7 @@ export default function Businesses() {
                     </TableCell>
                     <TableCell>
                       <Typography variant="caption">
-                        {new URL(business.domain).hostname}
+                        {business.domain?.includes('://') ? new URL(business.domain).hostname : business.domain}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -345,11 +364,11 @@ export default function Businesses() {
         <DialogTitle>
           <Box display="flex" alignItems="center" gap={1}>
             <BusinessIcon />
-            {selectedBusiness?.name}
+            {selectedBusiness?.name || 'Business Details'}
           </Box>
         </DialogTitle>
         <DialogContent>
-          {selectedBusiness && (
+          {selectedBusiness ? (
             <Box sx={{ pt: 1 }}>
               <Typography variant="h6" gutterBottom>Contact Information</Typography>
               <Box mb={2}>
@@ -362,6 +381,9 @@ export default function Businesses() {
                 {selectedBusiness.mobile && (
                   <Typography><strong>Mobile:</strong> {selectedBusiness.mobile}</Typography>
                 )}
+                {selectedBusiness.fax && (
+                  <Typography><strong>Fax:</strong> {selectedBusiness.fax}</Typography>
+                )}
                 {selectedBusiness.website && (
                   <Typography>
                     <strong>Website:</strong>{' '}
@@ -372,7 +394,7 @@ export default function Businesses() {
                 )}
               </Box>
 
-              {selectedBusiness.working_hours && (
+              {selectedBusiness.working_hours && Object.keys(selectedBusiness.working_hours).length > 0 && (
                 <Box mb={2}>
                   <Typography variant="h6" gutterBottom>Working Hours</Typography>
                   {Object.entries(selectedBusiness.working_hours).map(([day, hours]) => (
@@ -392,30 +414,53 @@ export default function Businesses() {
                 <Box mb={2}>
                   <Typography variant="h6" gutterBottom>Tags</Typography>
                   <Box display="flex" gap={1} flexWrap="wrap">
-                    {selectedBusiness.tags.map((tag) => (
-                      <Chip key={tag} label={tag} size="small" />
+                    {selectedBusiness.tags.map((tag, index) => (
+                      <Chip key={`${tag}-${index}`} label={tag} size="small" />
                     ))}
                   </Box>
                 </Box>
               )}
 
               <Box mb={2}>
-                <Typography variant="h6" gutterBottom>Additional Information</Typography>
+                <Typography variant="h6" gutterBottom>Business Information</Typography>
+                <Typography><strong>Category:</strong> {selectedBusiness.category}</Typography>
+                <Typography><strong>Location:</strong> {selectedBusiness.city}, {selectedBusiness.country}</Typography>
                 {selectedBusiness.established_year && (
                   <Typography><strong>Established:</strong> {selectedBusiness.established_year}</Typography>
                 )}
                 {selectedBusiness.employees && (
                   <Typography><strong>Employees:</strong> {selectedBusiness.employees}</Typography>
                 )}
-                <Typography><strong>Category:</strong> {selectedBusiness.category}</Typography>
-                <Typography><strong>Location:</strong> {selectedBusiness.city}, {selectedBusiness.country}</Typography>
+                {selectedBusiness.rating && (
+                  <Typography><strong>Rating:</strong> {selectedBusiness.rating}/5 ({selectedBusiness.reviews_count || 0} reviews)</Typography>
+                )}
+              </Box>
+
+              <Box mb={2}>
+                <Typography variant="h6" gutterBottom>Source Information</Typography>
                 <Typography>
                   <strong>Source:</strong>{' '}
                   <Link href={selectedBusiness.page_url} target="_blank" rel="noopener">
-                    {new URL(selectedBusiness.domain).hostname}
+                    {selectedBusiness.domain?.includes('://') ? new URL(selectedBusiness.domain).hostname : selectedBusiness.domain}
                   </Link>
                 </Typography>
+                <Typography><strong>Scraped:</strong> {new Date(selectedBusiness.scraped_at).toLocaleString()}</Typography>
+                {selectedBusiness.exported_at && (
+                  <Typography><strong>Exported:</strong> {new Date(selectedBusiness.exported_at).toLocaleString()}</Typography>
+                )}
               </Box>
+
+              {selectedBusiness.coordinates && (
+                <Box mb={2}>
+                  <Typography variant="h6" gutterBottom>Location Coordinates</Typography>
+                  <Typography><strong>Latitude:</strong> {selectedBusiness.coordinates.lat}</Typography>
+                  <Typography><strong>Longitude:</strong> {selectedBusiness.coordinates.lng}</Typography>
+                </Box>
+              )}
+            </Box>
+          ) : (
+            <Box sx={{ pt: 1 }}>
+              <Typography>No business data available</Typography>
             </Box>
           )}
         </DialogContent>

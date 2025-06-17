@@ -26,6 +26,12 @@ import {
   Tooltip,
   Autocomplete,
   CircularProgress,
+  InputAdornment,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Grid,
 } from '@mui/material';
 import {
   PlayArrow,
@@ -35,17 +41,24 @@ import {
   Refresh,
   Delete,
   Visibility,
+  Search,
+  Dashboard,
+  FilterList,
+  DataUsage,
 } from '@mui/icons-material';
 import { scrapingAPI } from '../api';
 import { ScrapingJob, CreateJobData, DomainInfo } from '../types';
 
 export default function Jobs() {
   const [jobs, setJobs] = useState<ScrapingJob[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<ScrapingJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [availableDomains, setAvailableDomains] = useState<DomainInfo[]>([]);
   const [domainsLoading, setDomainsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [newJob, setNewJob] = useState<CreateJobData>({
     name: '',
     domains: [],
@@ -64,6 +77,25 @@ export default function Jobs() {
     }, 10000); // Refresh every 10 seconds
     return () => clearInterval(interval);
   }, []);
+
+  // Filter jobs based on search term and status
+  useEffect(() => {
+    let filtered = jobs;
+
+    if (searchTerm) {
+      filtered = filtered.filter(job => 
+        job.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.domains.some(domain => domain.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (job.current_city && job.current_city.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(job => (job.status || 'pending') === statusFilter);
+    }
+
+    setFilteredJobs(filtered);
+  }, [jobs, searchTerm, statusFilter]);
 
   const fetchJobs = async () => {
     try {
@@ -175,6 +207,15 @@ export default function Jobs() {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4">Scraping Jobs</Typography>
         <Box>
+          <Button 
+            variant="contained" 
+            color="secondary"
+            startIcon={<Dashboard />} 
+            onClick={() => navigate('/enhanced-jobs')}
+            sx={{ mr: 2 }}
+          >
+            Enhanced Jobs
+          </Button>
           <Button startIcon={<Refresh />} onClick={fetchJobs} sx={{ mr: 1 }}>
             Refresh
           </Button>
@@ -193,6 +234,57 @@ export default function Jobs() {
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
+      {/* Search and Filter Controls */}
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
+            <Box flex={1} minWidth="300px">
+              <TextField
+                fullWidth
+                placeholder="Search by job name, domain, or city..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+            <Box minWidth="200px">
+              <FormControl fullWidth>
+                <InputLabel>Status Filter</InputLabel>
+                <Select
+                  value={statusFilter}
+                  label="Status Filter"
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <FilterList />
+                    </InputAdornment>
+                  }
+                >
+                  <MenuItem value="all">All Statuses</MenuItem>
+                  <MenuItem value="pending">Pending</MenuItem>
+                  <MenuItem value="running">Running</MenuItem>
+                  <MenuItem value="completed">Completed</MenuItem>
+                  <MenuItem value="paused">Paused</MenuItem>
+                  <MenuItem value="failed">Failed</MenuItem>
+                  <MenuItem value="cancelled">Cancelled</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box>
+              <Typography variant="body2" color="textSecondary">
+                {filteredJobs.length} of {jobs.length} jobs
+              </Typography>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardContent>
           <TableContainer component={Paper}>
@@ -209,7 +301,7 @@ export default function Jobs() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {jobs.map((job) => (
+                {filteredJobs.map((job) => (
                   <TableRow key={job._id}>
                     <TableCell>
                       <Typography variant="subtitle2">{job.name}</Typography>
@@ -262,14 +354,27 @@ export default function Jobs() {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Box display="flex" gap={1}>
-                        <Tooltip title="View Details">
+                      <Box display="flex" gap={1} flexWrap="wrap" alignItems="center">
+                        <Tooltip title="View Job Details">
                           <IconButton 
                             size="small"
                             onClick={() => navigate(`/jobs/${job._id}`)}
                           >
                             <Visibility />
                           </IconButton>
+                        </Tooltip>
+                        
+                        <Tooltip title="View Scraped Data">
+                          <Button 
+                            size="small"
+                            variant="outlined"
+                            color="primary"
+                            startIcon={<DataUsage />}
+                            onClick={() => navigate(`/businesses?job_id=${job._id}`)}
+                            sx={{ mr: 1 }}
+                          >
+                            View Data
+                          </Button>
                         </Tooltip>
                         
                         {canStart(job.status) && (
@@ -311,6 +416,15 @@ export default function Jobs() {
                     </TableCell>
                   </TableRow>
                 ))}
+                {filteredJobs.length === 0 && jobs.length > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={7} align="center">
+                      <Typography color="textSecondary">
+                        No jobs match your search criteria.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
                 {jobs.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={7} align="center">

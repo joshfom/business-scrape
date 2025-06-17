@@ -64,6 +64,39 @@ class ScrapingService:
         logger.info(f"Started scraping job {job_id}")
         return True
     
+    async def force_start_job(self, job_id: str) -> bool:
+        """Force start a scraping job, stopping any existing instance first"""
+        # If job is already running, stop it first
+        if job_id in self.active_jobs:
+            logger.info(f"Job {job_id} is already running, stopping it first for force start")
+            task = self.active_jobs.pop(job_id)
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+        
+        db = database.get_database()
+        jobs_collection = db.scraping_jobs
+        
+        # Update job status and reset started_at time
+        await jobs_collection.update_one(
+            {"_id": ObjectId(job_id)},
+            {
+                "$set": {
+                    "status": ScrapingStatus.RUNNING,
+                    "started_at": datetime.utcnow()
+                }
+            }
+        )
+        
+        # Start the scraping task
+        task = asyncio.create_task(self._execute_job(job_id))
+        self.active_jobs[job_id] = task
+        
+        logger.info(f"Force started scraping job {job_id}")
+        return True
+    
     async def pause_job(self, job_id: str) -> bool:
         """Pause a running job"""
         if job_id not in self.active_jobs:

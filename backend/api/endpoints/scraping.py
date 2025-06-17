@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, HTTPException, BackgroundTasks, Query
 from typing import List, Optional
 from models.schemas import ScrapingJobCreate, ScrapingJob, DashboardStats
 from services.scraping_service import scraping_service
+from services.job_seeding_service import job_seeding_service
 from models.database import database
 from datetime import datetime, timedelta
 import logging
@@ -66,6 +67,19 @@ async def start_scraping_job(job_id: str):
             raise HTTPException(status_code=400, detail="Job is already running or not found")
     except Exception as e:
         logger.error(f"Error starting job {job_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/jobs/{job_id}/force-start")
+async def force_start_scraping_job(job_id: str):
+    """Force start a scraping job, stopping any existing instance first"""
+    try:
+        success = await scraping_service.force_start_job(job_id)
+        if success:
+            return {"message": "Job force started successfully"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to force start job")
+    except Exception as e:
+        logger.error(f"Error force starting job {job_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/jobs/{job_id}/pause")
@@ -495,3 +509,143 @@ async def get_jobs_status_summary():
     except Exception as e:
         logger.error(f"Error getting jobs status summary: {e}")
         raise HTTPException(status_code=500, detail="Failed to get job status summary")
+
+# Job Seeding Endpoints
+@router.post("/seed-jobs")
+async def seed_jobs_from_countries(overwrite: bool = False):
+    """
+    Seed jobs from the countries configuration file
+    
+    Args:
+        overwrite: If True, removes existing jobs and creates new ones
+    """
+    try:
+        results = await job_seeding_service.seed_jobs(overwrite=overwrite)
+        return {
+            "message": "Job seeding completed",
+            "results": results
+        }
+    except Exception as e:
+        logger.error(f"Error seeding jobs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/countries-summary")
+async def get_countries_summary():
+    """Get summary of all countries available for seeding"""
+    try:
+        summary = await job_seeding_service.get_countries_summary()
+        return summary
+    except Exception as e:
+        logger.error(f"Error getting countries summary: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/seeded-jobs-status")
+async def get_seeded_jobs_status():
+    """Get status of all seeded jobs organized by region"""
+    try:
+        status = await job_seeding_service.get_seeded_jobs_status()
+        return status
+    except Exception as e:
+        logger.error(f"Error getting seeded jobs status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Enhanced Job Management Endpoints
+@router.get("/jobs/search")
+async def search_jobs(
+    domain: Optional[str] = Query(None, description="Filter by domain"),
+    status: Optional[str] = Query(None, description="Filter by status"),
+    region: Optional[str] = Query(None, description="Filter by region"),
+    country: Optional[str] = Query(None, description="Filter by country"),
+    sort_by: Optional[str] = Query("created_at", description="Sort field"),
+    sort_order: Optional[str] = Query("desc", description="Sort order (asc/desc)"),
+    skip: int = Query(0, description="Number of records to skip"),
+    limit: int = Query(20, description="Maximum number of records to return")
+):
+    """
+    Search and filter jobs with advanced options
+    """
+    try:
+        db = database.get_database()
+        jobs_collection = db.scraping_jobs
+        
+        # Build filter query
+        filter_query = {}
+        
+        if domain:
+            filter_query["domains"] = {"$in": [domain]}
+        
+        if status:
+            filter_query["status"] = status
+        
+        if region:
+            filter_query["region"] = {"$regex": region, "$options": "i"}
+        
+        if country:
+            filter_query["country"] = {"$regex": country, "$options": "i"}
+        
+        # Build sort criteria
+        sort_direction = -1 if sort_order.lower() == "desc" else 1
+        sort_criteria = [(sort_by, sort_direction)]
+        
+        # Execute query
+        cursor = jobs_collection.find(filter_query).sort(sort_criteria).skip(skip).limit(limit)
+        jobs = []
+        async for job in cursor:
+            if '_id' in job:
+                job['_id'] = str(job['_id'])
+            jobs.append(job)
+        
+        # Get total count for pagination
+        total_count = await jobs_collection.count_documents(filter_query)
+        
+        return {
+            "jobs": jobs,
+            "total_count": total_count,
+            "has_more": (skip + limit) < total_count
+        }
+    except Exception as e:
+        logger.error(f"Error searching jobs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/jobs/{job_id}/settings")
+async def update_job_settings(
+    job_id: str,
+    concurrent_requests: Optional[int] = None,
+    request_delay: Optional[float] = None
+):
+    """Update job settings (concurrency and delay)"""
+    try:
+        db = database.get_database()
+        jobs_collection = db.scraping_jobs
+        
+        # Build update query
+        update_data = {}
+        if concurrent_requests is not None:
+            if concurrent_requests < 1 or concurrent_requests > 20:
+                raise HTTPException(status_code=400, detail="Concurrent requests must be between 1 and 20")
+            update_data["concurrent_requests"] = concurrent_requests
+        
+        if request_delay is not None:
+            if request_delay < 0.1 or request_delay > 10:
+                raise HTTPException(status_code=400, detail="Request delay must be between 0.1 and 10 seconds")
+            update_data["request_delay"] = request_delay
+        
+        if not update_data:
+            raise HTTPException(status_code=400, detail="No valid settings provided")
+        
+        # Update the job
+        result = await jobs_collection.update_one(
+            {"_id": ObjectId(job_id)},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Job not found")
+        
+        return {"message": "Job settings updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating job settings: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: business-scraper-mongo-local
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=businessscraper123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_local:/data/db
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.single
+      args:
+        - REACT_APP_API_URL=/api
+    container_name: business-scraper-local
+    ports:
+      - "8080:80"  # Different port to avoid conflicts
+    environment:
+      - MONGODB_URI=mongodb://admin:businessscraper123@mongodb:27017/?directConnection=true
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+volumes:
+  mongodb_data_local:
+
+networks:
+  default:
+    name: business-scraper-local-network

@@ -18,8 +18,10 @@ import {
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
   Work as WorkIcon,
+  WorkOutline as WorkOutlineIcon,
   Business as BusinessIcon,
   CloudUpload as CloudUploadIcon,
+  Api as ApiIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -37,9 +39,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-  { text: 'Scraping Jobs', icon: <WorkIcon />, path: '/jobs' },
+  { text: 'Scraping Jobs', icon: <WorkOutlineIcon />, path: '/enhanced-jobs' },
   { text: 'Businesses', icon: <BusinessIcon />, path: '/businesses' },
   { text: 'API Export', icon: <CloudUploadIcon />, path: '/api-export' },
+  { text: 'API Docs', icon: <ApiIcon />, path: '/api-docs' },
 ];
 
 export default function Layout({ children }: LayoutProps) {

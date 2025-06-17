@@ -1,0 +1,77 @@
+# Coolify Configuration for Business Scraper
+# This file provides Coolify with deployment instructions
+
+version: "1.0"
+
+# Application metadata
+app:
+  name: "business-scraper"
+  description: "Web scraping application for business data collection"
+  type: "docker-compose"
+  framework: "custom"
+
+# Build configuration
+build:
+  dockerfile: "docker-compose.yml"
+  context: "."
+  
+# Runtime configuration
+runtime:
+  # Main service that Coolify should expose
+  main_service: "frontend"
+  
+  # Port that Coolify should proxy to
+  port: 80
+  
+  # Health check configuration
+  health_check:
+    enabled: true
+    path: "/"
+    port: 80
+    timeout: 30
+    interval: 30
+    retries: 3
+    
+  # Resource limits
+  resources:
+    memory: "2048Mi"
+    cpu: "1000m"
+
+# Environment variables
+environment:
+  required:
+    - MONGODB_URI
+    - REACT_APP_API_URL
+  optional:
+    - PYTHONUNBUFFERED
+    - NODE_ENV
+    
+# Domains and SSL
+domains:
+  ssl: true
+  redirect_www: false
+  
+# Backup configuration
+backups:
+  enabled: true
+  schedule: "0 3 * * *"  # Daily at 3 AM
+  retention: 7  # Keep 7 days
+  
+# Deployment hooks
+hooks:
+  pre_deploy: ".coolify/pre-deploy.sh"
+  post_deploy: ".coolify/post-deploy.sh"
+  health_check: ".coolify/health-check.sh"
+
+# Auto-deployment
+auto_deploy:
+  enabled: true
+  branch: "main"
+  
+# Monitoring
+monitoring:
+  enabled: true
+  alerts:
+    cpu_threshold: 80
+    memory_threshold: 80
+    disk_threshold: 85

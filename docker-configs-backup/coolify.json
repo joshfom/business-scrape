@@ -1,0 +1,12 @@
+{
+  "type": "dockerfile",
+  "dockerfile": "Dockerfile.single",
+  "port": 80,
+  "buildArgs": {
+    "REACT_APP_API_URL": "/api"
+  },
+  "environment": {
+    "MONGODB_URI": "mongodb://root:77T87Tjn62LDdS5Bq9bY52FGxDBdXfEmJS1cj69elnhQBsRj7BsAnr3SKQF77oot@fo8g4g0w8gcc8k44s8s4gsks:27017/?directConnection=true",
+    "PYTHONUNBUFFERED": "1"
+  }
+}

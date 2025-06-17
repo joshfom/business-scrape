@@ -1,0 +1,178 @@
+[
+  {
+    "region": "Asia",
+    "countries": [
+      { "name": "Armenia", "domain": "armeniayp.com", "url": "https://www.armeniayp.com" },
+      { "name": "Azerbaijan", "domain": "azerbaijanyp.com", "url": "https://www.azerbaijanyp.com" },
+      { "name": "Bangladesh", "domain": "bangladeshyp.com", "url": "https://www.bangladeshyp.com" },
+      { "name": "Brunei", "domain": "bruneiyp.com", "url": "https://www.bruneiyp.com" },
+      { "name": "Cambodia", "domain": "cambodiayp.com", "url": "https://www.cambodiayp.com" },
+      { "name": "China", "domain": "chinayello.com", "url": "https://www.chinayello.com" },
+      { "name": "Georgia", "domain": "georgiayp.com", "url": "https://www.georgiayp.com" },
+      { "name": "Hong Kong", "domain": "yelo.hk", "url": "https://www.yelo.hk" },
+      { "name": "India", "domain": "yelu.in", "url": "https://www.yelu.in" },
+      { "name": "Indonesia", "domain": "indonesiayp.com", "url": "https://www.indonesiayp.com" },
+      { "name": "Japan", "domain": "japanyello.com", "url": "https://www.japanyello.com" },
+      { "name": "Kazakhstan", "domain": "kazakhstanyp.com", "url": "https://www.kazakhstanyp.com" },
+      { "name": "Kyrgyzstan", "domain": "yelo.com.kg", "url": "https://www.yelo.com.kg" },
+      { "name": "Laos", "domain": "laosyp.com", "url": "https://www.laosyp.com" },
+      { "name": "Malaysia", "domain": "businesslist.my", "url": "https://www.businesslist.my" },
+      { "name": "Maldives", "domain": "maldivesyp.com", "url": "https://www.maldivesyp.com" },
+      { "name": "Myanmar", "domain": "myanmaryp.com", "url": "https://www.myanmaryp.com" },
+      { "name": "Nepal", "domain": "nepalyp.com", "url": "https://www.nepalyp.com" },
+      { "name": "Pakistan", "domain": "businesslist.pk", "url": "https://www.businesslist.pk" },
+      { "name": "Philippines", "domain": "businesslist.ph", "url": "https://www.businesslist.ph" },
+      { "name": "Singapore", "domain": "yelu.sg", "url": "https://www.yelu.sg" },
+      { "name": "South Korea", "domain": "southkoreayp.com", "url": "https://www.southkoreayp.com" },
+      { "name": "Sri Lanka", "domain": "lankayp.com", "url": "https://www.lankayp.com" },
+      { "name": "Taiwan", "domain": "taiwanyello.com", "url": "https://www.taiwanyello.com" },
+      { "name": "Thailand", "domain": "thaiyello.com", "url": "https://www.thaiyello.com" },
+      { "name": "Uzbekistan", "domain": "uzbekistanyp.com", "url": "https://www.uzbekistanyp.com" },
+      { "name": "Vietnam", "domain": "vietnamyello.com", "url": "https://www.vietnamyello.com" }
+    ]
+  },
+  {
+    "region": "Middle East",
+    "countries": [
+      { "name": "Bahrain", "domain": "bahrainyellow.com", "url": "https://www.bahrainyellow.com" },
+      { "name": "Egypt", "domain": "egyptyello.com", "url": "https://www.egyptyello.com" },
+      { "name": "Emirates", "domain": "yello.ae", "url": "https://www.yello.ae" },
+      { "name": "Iran", "domain": "iranyell.com", "url": "https://www.iranyell.com" },
+      { "name": "Israel", "domain": "israeliyp.com", "url": "https://www.israeliyp.com" },
+      { "name": "Jordan", "domain": "jordanyp.com", "url": "https://www.jordanyp.com" },
+      { "name": "Kuwait", "domain": "kuwaityello.com", "url": "https://www.kuwaityello.com" },
+      { "name": "Lebanon", "domain": "yelleb.com", "url": "https://www.yelleb.com" },
+      { "name": "Oman", "domain": "omanyp.com", "url": "https://www.omanyp.com" },
+      { "name": "Qatar", "domain": "qataryello.com", "url": "https://www.qataryello.com" },
+      { "name": "Saudi Arabia", "domain": "saudiayp.com", "url": "https://www.saudiayp.com" },
+      { "name": "Syria", "domain": "syriayp.com", "url": "https://www.syriayp.com" },
+      { "name": "Yemen", "domain": "yemenyp.com", "url": "https://www.yemenyp.com" }
+    ]
+  },
+  {
+    "region": "Africa",
+    "countries": [
+      { "name": "Algeria", "domain": "algeriayp.com", "url": "https://www.algeriayp.com" },
+      { "name": "Benin", "domain": "beninyp.com", "url": "https://www.beninyp.com" },
+      { "name": "Botswana", "domain": "localbotswana.com", "url": "https://www.localbotswana.com" },
+      { "name": "Cameroon", "domain": "businesslist.co.cm", "url": "https://www.businesslist.co.cm" },
+      { "name": "Chad", "domain": "chadyp.com", "url": "https://www.chadyp.com" },
+      { "name": "DR Congo", "domain": "congoyp.com", "url": "https://www.congoyp.com" },
+      { "name": "Djibouti", "domain": "djiboutiyp.com", "url": "https://www.djiboutiyp.com" },
+      { "name": "Ethiopia", "domain": "ethyp.com", "url": "https://www.ethyp.com" },
+      { "name": "Gabon", "domain": "yelu.ga", "url": "https://www.yelu.ga" },
+      { "name": "Ghana", "domain": "ghanayello.com", "url": "https://www.ghanayello.com" },
+      { "name": "Ivory Coast", "domain": "yelloci.com", "url": "https://www.yelloci.com" },
+      { "name": "Kenya", "domain": "businesslist.co.ke", "url": "https://www.businesslist.co.ke" },
+      { "name": "Lesotho", "domain": "lesothoyp.com", "url": "https://www.lesothoyp.com" },
+      { "name": "Libya", "domain": "libyayp.com", "url": "https://www.libyayp.com" },
+      { "name": "Madagascar", "domain": "madayp.com", "url": "https://www.madayp.com" },
+      { "name": "Malawi", "domain": "malawiyp.com", "url": "https://www.malawiyp.com" },
+      { "name": "Mali", "domain": "maliyp.com", "url": "https://www.maliyp.com" },
+      { "name": "Mauritania", "domain": "mauritaniayp.com", "url": "https://www.mauritaniayp.com" },
+      { "name": "Mauritius", "domain": "yelo.mu", "url": "https://www.yelo.mu" },
+      { "name": "Morocco", "domain": "yelo.ma", "url": "https://www.yelo.ma" },
+      { "name": "Mozambique", "domain": "mozambiqueyp.com", "url": "https://www.mozambiqueyp.com" },
+      { "name": "Namibia", "domain": "namibiayp.com", "url": "https://www.namibiayp.com" },
+      { "name": "Niger", "domain": "nigeryp.com", "url": "https://www.nigeryp.com" },
+      { "name": "Nigeria", "domain": "businesslist.com.ng", "url": "https://www.businesslist.com.ng" },
+      { "name": "Rwanda", "domain": "rwandayp.com", "url": "https://www.rwandayp.com" },
+      { "name": "Senegal", "domain": "yelu.sn", "url": "https://www.yelu.sn" },
+      { "name": "Seychelles", "domain": "seychellesyp.com", "url": "https://www.seychellesyp.com" },
+      { "name": "South Africa", "domain": "yellosa.co.za", "url": "https://www.yellosa.co.za" },
+      { "name": "Sudan", "domain": "sudanyp.com", "url": "https://www.sudanyp.com" },
+      { "name": "Tanzania", "domain": "tanzapages.com", "url": "https://www.tanzapages.com" },
+      { "name": "Togo", "domain": "togoyp.com", "url": "https://www.togoyp.com" },
+      { "name": "Tunisia", "domain": "tunisiayp.com", "url": "https://www.tunisiayp.com" },
+      { "name": "Uganda", "domain": "yellow.ug", "url": "https://www.yellow.ug" },
+      { "name": "Zambia", "domain": "zambiayp.com", "url": "https://www.zambiayp.com" },
+      { "name": "Zimbabwe", "domain": "zimbabweyp.com", "url": "https://www.zimbabweyp.com" }
+    ]
+  },
+  {
+    "region": "Europe",
+    "countries": [
+      { "name": "Albania", "domain": "albaniayp.com", "url": "https://www.albaniayp.com" },
+      { "name": "Austria", "domain": "austriayp.com", "url": "https://www.austriayp.com" },
+      { "name": "Belarus", "domain": "yelo.by", "url": "https://www.yelo.by" },
+      { "name": "Belgium", "domain": "belgiumyp.com", "url": "https://www.belgiumyp.com" },
+      { "name": "Croatia", "domain": "croatiayp.com", "url": "https://www.croatiayp.com" },
+      { "name": "Cyprus", "domain": "cypindex.com", "url": "https://www.cypindex.com" },
+      { "name": "Estonia", "domain": "estoniayp.com", "url": "https://www.estoniayp.com" },
+      { "name": "Finland", "domain": "yellofi.com", "url": "https://www.yellofi.com" },
+      { "name": "Iceland", "domain": "yelu.is", "url": "https://www.yelu.is" },
+      { "name": "Ireland", "domain": "irelandyp.com", "url": "https://www.irelandyp.com" },
+      { "name": "Lithuania", "domain": "imoniukontaktai.lt", "url": "https://www.imoniukontaktai.lt" },
+      { "name": "Luxembourg", "domain": "luxyello.com", "url": "https://www.luxyello.com" },
+      { "name": "Malta", "domain": "maltayp.com", "url": "https://www.maltayp.com" },
+      { "name": "Netherlands", "domain": "yelu.nl", "url": "https://www.yelu.nl" },
+      { "name": "Norway", "domain": "yelono.com", "url": "https://www.yelono.com" },
+      { "name": "Poland", "domain": "polandyp.com", "url": "https://www.polandyp.com" },
+      { "name": "Portugal", "domain": "portugalyp.com", "url": "https://www.portugalyp.com" },
+      { "name": "Romania", "domain": "romaniayp.com", "url": "https://www.romaniayp.com" },
+      { "name": "Slovakia", "domain": "slovakiayp.com", "url": "https://www.slovakiayp.com" },
+      { "name": "Slovenia", "domain": "sloveniayp.com", "url": "https://www.sloveniayp.com" },
+      { "name": "Sweden", "domain": "swedyello.com", "url": "https://www.swedyello.com" },
+      { "name": "Switzerland", "domain": "swissyello.com", "url": "https://www.swissyello.com" },
+      { "name": "Turkey", "domain": "turkishyello.com", "url": "https://www.turkishyello.com" },
+      { "name": "United Kingdom", "domain": "yelu.uk", "url": "https://www.yelu.uk" }
+    ]
+  },
+  {
+    "region": "Australia",
+    "countries": [
+      { "name": "Australia", "domain": "australiayp.com", "url": "https://www.australiayp.com" },
+      { "name": "Fiji", "domain": "fijiyp.com", "url": "https://www.fijiyp.com" },
+      { "name": "New Zealand", "domain": "businesslist.nz", "url": "https://www.businesslist.nz" },
+      { "name": "Papua New Guinea", "domain": "pngyp.com", "url": "https://www.pngyp.com" }
+    ]
+  },
+  {
+    "region": "North America",
+    "countries": [
+      { "name": "Bahamas", "domain": "bahamasindex.com", "url": "https://www.bahamasindex.com" },
+      { "name": "Barbados", "domain": "barbadosindex.com", "url": "https://www.barbadosindex.com" },
+      { "name": "Belize", "domain": "yelu.bz", "url": "https://www.yelu.bz" },
+      { "name": "Cayman Islands", "domain": "caymanlist.com", "url": "https://www.caymanlist.com" },
+      { "name": "Costa Rica", "domain": "yelu.cr", "url": "https://www.yelu.cr" },
+      { "name": "Cuba", "domain": "yellocu.com", "url": "https://www.yellocu.com" },
+      { "name": "Dominican Republic", "domain": "yelu.do", "url": "https://www.yelu.do" },
+      { "name": "El Salvador", "domain": "elsalvadoryp.com", "url": "https://www.elsalvadoryp.com" },
+      { "name": "Grenada", "domain": "grenadaindex.com", "url": "https://www.grenadaindex.com" },
+      { "name": "Guadeloupe", "domain": "guadeloupeindex.com", "url": "https://www.guadeloupeindex.com" },
+      { "name": "Guatemala", "domain": "gtyello.com", "url": "https://www.gtyello.com" },
+      { "name": "Honduras", "domain": "yelu.hn", "url": "https://www.yelu.hn" },
+      { "name": "Jamaica", "domain": "jamaicaindex.com", "url": "https://www.jamaicaindex.com" },
+      { "name": "Martinique", "domain": "martiniqueindex.com", "url": "https://www.martiniqueindex.com" },
+      { "name": "Mexico", "domain": "yelo.com.mx", "url": "https://www.yelo.com.mx" },
+      { "name": "Nicaragua", "domain": "yelu.com.ni", "url": "https://www.yelu.com.ni" },
+      { "name": "Panama", "domain": "yelupa.com", "url": "https://www.yelupa.com" },
+      { "name": "Puerto Rico", "domain": "puertoricoindex.com", "url": "https://www.puertoricoindex.com" },
+      { "name": "Saint Lucia", "domain": "saintluciaindex.com", "url": "https://www.saintluciaindex.com" },
+      { "name": "Trinidad and Tobago", "domain": "tntyellow.com", "url": "https://www.tntyellow.com" }
+    ]
+  },
+  {
+    "region": "South America",
+    "countries": [
+      { "name": "Argentina", "domain": "arempresas.com", "url": "https://www.arempresas.com" },
+      { "name": "Bolivia", "domain": "boliviayp.com", "url": "https://www.boliviayp.com" },
+      { "name": "Brazil", "domain": "brazilyello.com", "url": "https://www.brazilyello.com" },
+      { "name": "Chile", "domain": "yelu.cl", "url": "https://www.yelu.cl" },
+      { "name": "Colombia", "domain": "yelu.com.co", "url": "https://www.yelu.com.co" },
+      { "name": "Ecuador", "domain": "yelu.ec", "url": "https://www.yelu.ec" },
+      { "name": "Guyana", "domain": "guyanaindex.com", "url": "https://www.guyanaindex.com" },
+      { "name": "Paraguay", "domain": "yeloparaguay.com", "url": "https://www.yeloparaguay.com" },
+      { "name": "Peru", "domain": "peruyello.com", "url": "https://www.peruyello.com" },
+      { "name": "Suriname", "domain": "surinamyp.com", "url": "https://www.surinamyp.com" },
+      { "name": "Uruguay", "domain": "yelu.uy", "url": "https://www.yelu.uy" },
+      { "name": "Venezuela", "domain": "venezuelayello.com", "url": "https://www.venezuelayello.com" }
+    ]
+  },
+  {
+    "region": "USA",
+    "countries": [
+      { "name": "Florida", "domain": "floridanegocio.com", "url": "https://www.floridanegocio.com" }
+    ]
+  }
+]

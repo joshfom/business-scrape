@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Dashboard from './components/Dashboard';
-import Jobs from './components/Jobs';
+import EnhancedJobs from './components/EnhancedJobs';
 import JobDetails from './components/JobDetails';
 import Businesses from './components/Businesses';
 import ApiExport from './components/ApiExport';
+import ApiDocs from './components/ApiDocs';
 import Layout from './components/Layout';
 
 const theme = createTheme({
@@ -29,10 +30,11 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/enhanced-jobs" element={<EnhancedJobs />} />
             <Route path="/jobs/:jobId" element={<JobDetails />} />
             <Route path="/businesses" element={<Businesses />} />
             <Route path="/api-export" element={<ApiExport />} />
+            <Route path="/api-docs" element={<ApiDocs />} />
           </Routes>
         </Layout>
       </Router>

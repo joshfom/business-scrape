@@ -24,6 +24,7 @@ RUN apt-get update && \
     curl \
     nginx \
     supervisor \
+    apache2-utils \
     build-essential && \
     rm -rf /var/lib/apt/lists/*
 
@@ -39,6 +40,9 @@ COPY --from=frontend-build /app/frontend/build /var/www/html
 # Copy configurations
 COPY nginx.conf /etc/nginx/sites-available/default
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Create basic auth file (username: admin, password: business123)
+RUN htpasswd -cb /etc/nginx/.htpasswd admin business123
 
 # Create required directories (no MongoDB data dir needed)
 RUN mkdir -p /var/log/supervisor /app/logs && \

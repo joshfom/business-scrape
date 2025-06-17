@@ -246,14 +246,38 @@ class YelloScraper(BaseScraper):
                 soup = BeautifulSoup(html, 'html.parser')
                 
                 business_urls = []
-                # Find business links in company divs
+                # Find business links in company divs - try multiple selectors in order of preference
+                
+                # Primary selector: header links (most common and reliable)
                 business_links = soup.select('div.company h3 a[href^="/company/"]')
                 
+                # If primary selector found links, use those
+                if business_links:
+                    logger.debug(f"Found {len(business_links)} business links using primary selector (h3)")
+                else:
+                    # Fallback 1: company header links without h3 requirement  
+                    business_links = soup.select('div.company .company_header a[href^="/company/"]')
+                    if business_links:
+                        logger.debug(f"Found {len(business_links)} business links using header selector")
+                    else:
+                        # Fallback 2: any company link within a company div (includes logo links)
+                        business_links = soup.select('div.company a[href^="/company/"]')
+                        if business_links:
+                            logger.debug(f"Found {len(business_links)} business links using general selector")
+                        else:
+                            # Final fallback: any company link on the page
+                            business_links = soup.select('a[href^="/company/"]')
+                            logger.debug(f"Found {len(business_links)} business links using page-wide selector")
+                
+                # Extract unique URLs to avoid duplicates (in case there are multiple links to same company)
+                seen_urls = set()
                 for link in business_links:
                     href = link.get('href')
                     if href:
                         full_url = urljoin(self.base_url, href)
-                        business_urls.append(full_url)
+                        if full_url not in seen_urls:
+                            business_urls.append(full_url)
+                            seen_urls.add(full_url)
                 
                 # Check for next page
                 has_next = bool(soup.select('a.pages_arrow[rel="next"]'))

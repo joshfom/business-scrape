@@ -20,7 +20,8 @@ async def list_businesses(
     domain: Optional[str] = None,
     city: Optional[str] = None,
     category: Optional[str] = None,
-    search: Optional[str] = None
+    search: Optional[str] = None,
+    job_id: Optional[str] = None
 ):
     """List businesses with optional filtering"""
     try:
@@ -35,6 +36,8 @@ async def list_businesses(
             filter_query["city"] = {"$regex": city, "$options": "i"}
         if category:
             filter_query["category"] = {"$regex": category, "$options": "i"}
+        if job_id:
+            filter_query["job_id"] = job_id
         if search:
             filter_query["$or"] = [
                 {"name": {"$regex": search, "$options": "i"}},
@@ -382,6 +385,219 @@ async def mark_businesses_exported(export_request: ExportRequest):
         
     except Exception as e:
         logger.error(f"Error marking businesses as exported: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/export/enhanced")
+async def export_businesses_enhanced(
+    sort_by: Optional[str] = Query("country", description="Sort by: country, region, city, domain"),
+    sort_order: Optional[str] = Query("asc", description="Sort order: asc or desc"),
+    region: Optional[str] = Query(None, description="Filter by region"),
+    country: Optional[str] = Query(None, description="Filter by country"),
+    domain: Optional[str] = Query(None, description="Filter by domain"),
+    format: Optional[str] = Query("json", description="Export format: json, csv")
+):
+    """
+    Enhanced export with sorting by region/country/cities and filtering
+    """
+    try:
+        db = database.get_database()
+        businesses_collection = db.businesses
+        jobs_collection = db.scraping_jobs
+        
+        # Build aggregation pipeline
+        pipeline = []
+        
+        # Match stage for filtering
+        match_stage = {}
+        if region:
+            match_stage["region"] = {"$regex": region, "$options": "i"}
+        if country:
+            match_stage["country"] = {"$regex": country, "$options": "i"}
+        if domain:
+            match_stage["domain"] = domain
+        
+        if match_stage:
+            pipeline.append({"$match": match_stage})
+        
+        # Lookup job information to get region data
+        pipeline.append({
+            "$lookup": {
+                "from": "scraping_jobs",
+                "localField": "domain",
+                "foreignField": "domains",
+                "as": "job_info"
+            }
+        })
+        
+        # Add computed fields for region and country from job info
+        pipeline.append({
+            "$addFields": {
+                "region": {
+                    "$ifNull": [
+                        {"$arrayElemAt": ["$job_info.region", 0]},
+                        "Unknown"
+                    ]
+                },
+                "country_from_job": {
+                    "$ifNull": [
+                        {"$arrayElemAt": ["$job_info.country", 0]},
+                        "$country"
+                    ]
+                }
+            }
+        })
+        
+        # Sort stage
+        sort_direction = -1 if sort_order.lower() == "desc" else 1
+        sort_field = sort_by
+        
+        # Map sort fields to actual fields
+        if sort_by == "country":
+            sort_field = "country_from_job"
+        elif sort_by == "region":
+            sort_field = "region"
+        elif sort_by == "city":
+            sort_field = "city"
+        elif sort_by == "domain":
+            sort_field = "domain"
+        
+        pipeline.append({
+            "$sort": {
+                sort_field: sort_direction,
+                "city": 1,  # Secondary sort by city
+                "name": 1   # Tertiary sort by name
+            }
+        })
+        
+        # Project stage to clean up the output
+        pipeline.append({
+            "$project": {
+                "job_info": 0,  # Remove job_info array
+                "country": "$country_from_job"  # Use the computed country
+            }
+        })
+        
+        # Execute aggregation
+        businesses = []
+        async for business in businesses_collection.aggregate(pipeline):
+            if '_id' in business:
+                business['_id'] = str(business['_id'])
+            # Convert datetime objects to ISO format
+            if 'scraped_at' in business and business['scraped_at']:
+                business['scraped_at'] = business['scraped_at'].isoformat()
+            if 'exported_at' in business and business['exported_at']:
+                business['exported_at'] = business['exported_at'].isoformat()
+            businesses.append(business)
+        
+        # Generate filename
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        filename = f"businesses_export_{sort_by}_{timestamp}"
+        
+        if format.lower() == "csv":
+            # Convert to CSV
+            import csv
+            output = io.StringIO()
+            
+            if businesses:
+                fieldnames = list(businesses[0].keys())
+                writer = csv.DictWriter(output, fieldnames=fieldnames)
+                writer.writeheader()
+                
+                for business in businesses:
+                    # Handle nested dictionaries and lists
+                    row = {}
+                    for key, value in business.items():
+                        if isinstance(value, (dict, list)):
+                            row[key] = json.dumps(value)
+                        else:
+                            row[key] = value
+                    writer.writerow(row)
+            
+            csv_content = output.getvalue()
+            output.close()
+            
+            return StreamingResponse(
+                io.BytesIO(csv_content.encode('utf-8')),
+                media_type="text/csv",
+                headers={"Content-Disposition": f"attachment; filename={filename}.csv"}
+            )
+        else:
+            # Return JSON
+            json_content = json.dumps(businesses, indent=2, default=str)
+            return StreamingResponse(
+                io.BytesIO(json_content.encode('utf-8')),
+                media_type="application/json",
+                headers={"Content-Disposition": f"attachment; filename={filename}.json"}
+            )
+        
+    except Exception as e:
+        logger.error(f"Error in enhanced export: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/stats/by-region")
+async def get_businesses_by_region():
+    """Get business statistics by region and country"""
+    try:
+        db = database.get_database()
+        businesses_collection = db.businesses
+        jobs_collection = db.scraping_jobs
+        
+        # Aggregate with job information to get region data
+        pipeline = [
+            {
+                "$lookup": {
+                    "from": "scraping_jobs",
+                    "localField": "domain",
+                    "foreignField": "domains",
+                    "as": "job_info"
+                }
+            },
+            {
+                "$addFields": {
+                    "region": {
+                        "$ifNull": [
+                            {"$arrayElemAt": ["$job_info.region", 0]},
+                            "Unknown"
+                        ]
+                    },
+                    "country_from_job": {
+                        "$ifNull": [
+                            {"$arrayElemAt": ["$job_info.country", 0]},
+                            "$country"
+                        ]
+                    }
+                }
+            },
+            {
+                "$group": {
+                    "_id": {
+                        "region": "$region",
+                        "country": "$country_from_job"
+                    },
+                    "count": {"$sum": 1},
+                    "cities": {"$addToSet": "$city"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "region": "$_id.region",
+                    "country": "$_id.country",
+                    "business_count": "$count",
+                    "city_count": {"$size": "$cities"},
+                    "cities": "$cities"
+                }
+            },
+            {
+                "$sort": {"region": 1, "country": 1}
+            }
+        ]
+        
+        result = await businesses_collection.aggregate(pipeline).to_list(None)
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error getting businesses by region: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 async def _export_by_city_chunks(collection, base_filter, export_mode, job_id):

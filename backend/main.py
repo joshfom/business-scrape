@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.endpoints import scraping, businesses, api_export_simple
+from api.endpoints import scraping, businesses, api_export_simple, public_api
 from models.database import database
 import logging
 
@@ -21,17 +21,19 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000", "http://127.0.0.1:3000",
-        "http://localhost:3020", "http://127.0.0.1:3020"
+        "http://localhost:3020", "http://127.0.0.1:3020",
+        "http://152.53.168.44", "http://152.53.168.44:80"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
+# Include routers with /api prefix (since nginx strips /api/ prefix)
 app.include_router(scraping.router, prefix="/api")
 app.include_router(businesses.router, prefix="/api")
 app.include_router(api_export_simple.router, prefix="/api")
+app.include_router(public_api.router, prefix="/api")
 
 @app.on_event("startup")
 async def startup_event():

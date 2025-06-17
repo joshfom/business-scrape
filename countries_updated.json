@@ -1,0 +1,1002 @@
+{
+  "countries": [
+    {
+      "region": "Asia",
+      "countries": [
+        {
+          "name": "Armenia",
+          "domain": "armeniayp.com",
+          "url": "https://www.armeniayp.com",
+          "latitude": "40.069099",
+          "longitude": "45.038189"
+        },
+        {
+          "name": "Azerbaijan",
+          "domain": "azerbaijanyp.com",
+          "url": "https://www.azerbaijanyp.com",
+          "latitude": "40.4349504",
+          "longitude": "49.8676232"
+        },
+        {
+          "name": "Bangladesh",
+          "domain": "bangladeshyp.com",
+          "url": "https://www.bangladeshyp.com",
+          "latitude": "23.684994",
+          "longitude": "90.356331"
+        },
+        {
+          "name": "Brunei",
+          "domain": "bruneiyp.com",
+          "url": "https://www.bruneiyp.com",
+          "latitude": "4.535277",
+          "longitude": "114.727669"
+        },
+        {
+          "name": "Cambodia",
+          "domain": "cambodiayp.com",
+          "url": "https://www.cambodiayp.com",
+          "latitude": "12.565679",
+          "longitude": "104.990963"
+        },
+        {
+          "name": "China",
+          "domain": "chinayello.com",
+          "url": "https://www.chinayello.com",
+          "latitude": "31.230393",
+          "longitude": "121.473704"
+        },
+        {
+          "name": "Georgia",
+          "domain": "georgiayp.com",
+          "url": "https://www.georgiayp.com",
+          "latitude": "42.315407",
+          "longitude": "43.356892"
+        },
+        {
+          "name": "Hong Kong",
+          "domain": "yelo.hk",
+          "url": "https://www.yelo.hk",
+          "latitude": "22.396428",
+          "longitude": "114.109497"
+        },
+        {
+          "name": "India",
+          "domain": "yelu.in",
+          "url": "https://www.yelu.in",
+          "latitude": "20.593684",
+          "longitude": "78.96288"
+        },
+        {
+          "name": "Indonesia",
+          "domain": "indonesiayp.com",
+          "url": "https://www.indonesiayp.com",
+          "latitude": "-0.789275",
+          "longitude": "113.921327"
+        },
+        {
+          "name": "Japan",
+          "domain": "japanyello.com",
+          "url": "https://www.japanyello.com",
+          "latitude": "36.204824",
+          "longitude": "138.252924"
+        },
+        {
+          "name": "Kazakhstan",
+          "domain": "kazakhstanyp.com",
+          "url": "https://www.kazakhstanyp.com",
+          "latitude": "51.1666667",
+          "longitude": "71.4333333"
+        },
+        {
+          "name": "Kyrgyzstan",
+          "domain": "yelo.com.kg",
+          "url": "https://www.yelo.com.kg",
+          "latitude": "42.874322",
+          "longitude": "74.567659"
+        },
+        {
+          "name": "Laos",
+          "domain": "laosyp.com",
+          "url": "https://www.laosyp.com",
+          "latitude": "17.98091",
+          "longitude": "102.631215"
+        },
+        {
+          "name": "Malaysia",
+          "domain": "businesslist.my",
+          "url": "https://www.businesslist.my",
+          "latitude": "3.139003",
+          "longitude": "101.686855"
+        },
+        {
+          "name": "Maldives",
+          "domain": "maldivesyp.com",
+          "url": "https://www.maldivesyp.com",
+          "latitude": "4.175465",
+          "longitude": "73.508571"
+        },
+        {
+          "name": "Myanmar",
+          "domain": "myanmaryp.com",
+          "url": "https://www.myanmaryp.com",
+          "latitude": "21.913965",
+          "longitude": "95.956223"
+        },
+        {
+          "name": "Nepal",
+          "domain": "nepalyp.com",
+          "url": "https://www.nepalyp.com",
+          "latitude": "28.394857",
+          "longitude": "84.124008"
+        },
+        {
+          "name": "Pakistan",
+          "domain": "businesslist.pk",
+          "url": "https://www.businesslist.pk",
+          "latitude": "33.718151",
+          "longitude": "73.060547"
+        },
+        {
+          "name": "Philippines",
+          "domain": "businesslist.ph",
+          "url": "https://www.businesslist.ph",
+          "latitude": "14.5833333",
+          "longitude": "120.9666667"
+        },
+        {
+          "name": "Singapore",
+          "domain": "yelu.sg",
+          "url": "https://www.yelu.sg",
+          "latitude": "1.352083",
+          "longitude": "103.819836"
+        },
+        {
+          "name": "South Korea",
+          "domain": "southkoreayp.com",
+          "url": "https://www.southkoreayp.com",
+          "latitude": "35.907757",
+          "longitude": "127.766922"
+        },
+        {
+          "name": "Sri Lanka",
+          "domain": "lankayp.com",
+          "url": "https://www.lankayp.com",
+          "latitude": "7.873054",
+          "longitude": "80.771797"
+        },
+        {
+          "name": "Taiwan",
+          "domain": "taiwanyello.com",
+          "url": "https://www.taiwanyello.com",
+          "latitude": "23.69781",
+          "longitude": "120.960515"
+        },
+        {
+          "name": "Thailand",
+          "domain": "thaiyello.com",
+          "url": "https://www.thaiyello.com",
+          "latitude": "15.870032",
+          "longitude": "100.992541"
+        },
+        {
+          "name": "Uzbekistan",
+          "domain": "uzbekistanyp.com",
+          "url": "https://www.uzbekistanyp.com",
+          "latitude": "41.266667",
+          "longitude": "69.216667"
+        },
+        {
+          "name": "Vietnam",
+          "domain": "vietnamyello.com",
+          "url": "https://www.vietnamyello.com",
+          "latitude": "10.8230989",
+          "longitude": "106.6296638"
+        }
+      ]
+    },
+    {
+      "region": "Middle East",
+      "countries": [
+        {
+          "name": "Bahrain",
+          "domain": "bahrainyellow.com",
+          "url": "https://www.bahrainyellow.com",
+          "latitude": "26.0667",
+          "longitude": "50.5577"
+        },
+        {
+          "name": "Egypt",
+          "domain": "egyptyello.com",
+          "url": "https://www.egyptyello.com",
+          "latitude": "30.04449",
+          "longitude": "31.2356947"
+        },
+        {
+          "name": "Emirates",
+          "domain": "yello.ae",
+          "url": "https://www.yello.ae",
+          "latitude": "24.555867",
+          "longitude": "54.659729"
+        },
+        {
+          "name": "Iran",
+          "domain": "iranyell.com",
+          "url": "https://www.iranyell.com",
+          "latitude": "35.6961111",
+          "longitude": "51.4230556"
+        },
+        {
+          "name": "Israel",
+          "domain": "israeliyp.com",
+          "url": "https://www.israeliyp.com",
+          "latitude": "31.046051",
+          "longitude": "34.851612"
+        },
+        {
+          "name": "Jordan",
+          "domain": "jordanyp.com",
+          "url": "https://www.jordanyp.com",
+          "latitude": "31.9565783",
+          "longitude": "35.9456951"
+        },
+        {
+          "name": "Kuwait",
+          "domain": "kuwaityello.com",
+          "url": "https://www.kuwaityello.com",
+          "latitude": "29.31166",
+          "longitude": "47.481766"
+        },
+        {
+          "name": "Lebanon",
+          "domain": "yelleb.com",
+          "url": "https://www.yelleb.com",
+          "latitude": "33.854721",
+          "longitude": "35.862285"
+        },
+        {
+          "name": "Oman",
+          "domain": "omanyp.com",
+          "url": "https://www.omanyp.com",
+          "latitude": "21.512583",
+          "longitude": "55.923255"
+        },
+        {
+          "name": "Qatar",
+          "domain": "qataryello.com",
+          "url": "https://www.qataryello.com",
+          "latitude": "25.280282",
+          "longitude": "51.522476"
+        },
+        {
+          "name": "Saudi Arabia",
+          "domain": "saudiayp.com",
+          "url": "https://www.saudiayp.com",
+          "latitude": "23.885942",
+          "longitude": "45.079162"
+        },
+        {
+          "name": "Syria",
+          "domain": "syriayp.com",
+          "url": "https://www.syriayp.com",
+          "latitude": "34.802075",
+          "longitude": "38.996815"
+        },
+        {
+          "name": "Yemen",
+          "domain": "yemenyp.com",
+          "url": "https://www.yemenyp.com",
+          "latitude": "15.552727",
+          "longitude": "48.516388"
+        }
+      ]
+    },
+    {
+      "region": "Africa",
+      "countries": [
+        {
+          "name": "Algeria",
+          "domain": "algeriayp.com",
+          "url": "https://www.algeriayp.com",
+          "latitude": "28.033886",
+          "longitude": "1.659626"
+        },
+        {
+          "name": "Benin",
+          "domain": "beninyp.com",
+          "url": "https://www.beninyp.com",
+          "latitude": "9.30769",
+          "longitude": "2.315834"
+        },
+        {
+          "name": "Botswana",
+          "domain": "localbotswana.com",
+          "url": "https://www.localbotswana.com",
+          "latitude": "-22.328474",
+          "longitude": "24.684866"
+        },
+        {
+          "name": "Cameroon",
+          "domain": "businesslist.co.cm",
+          "url": "https://www.businesslist.co.cm",
+          "latitude": "7.369722",
+          "longitude": "12.354722"
+        },
+        {
+          "name": "Chad",
+          "domain": "chadyp.com",
+          "url": "https://www.chadyp.com",
+          "latitude": "12.104797",
+          "longitude": "15.044506"
+        },
+        {
+          "name": "DR Congo",
+          "domain": "congoyp.com",
+          "url": "https://www.congoyp.com",
+          "latitude": "-4.038333",
+          "longitude": "21.758664"
+        },
+        {
+          "name": "Djibouti",
+          "domain": "djiboutiyp.com",
+          "url": "https://www.djiboutiyp.com",
+          "latitude": "11.825138",
+          "longitude": "42.590275"
+        },
+        {
+          "name": "Ethiopia",
+          "domain": "ethyp.com",
+          "url": "https://www.ethyp.com",
+          "latitude": "9.145",
+          "longitude": "40.489673"
+        },
+        {
+          "name": "Gabon",
+          "domain": "yelu.ga",
+          "url": "https://www.yelu.ga",
+          "latitude": "0.403556",
+          "longitude": "9.435239"
+        },
+        {
+          "name": "Ghana",
+          "domain": "ghanayello.com",
+          "url": "https://www.ghanayello.com",
+          "latitude": "7.946527",
+          "longitude": "-1.023194"
+        },
+        {
+          "name": "Ivory Coast",
+          "domain": "yelloci.com",
+          "url": "https://www.yelloci.com",
+          "latitude": "6.81394",
+          "longitude": "-5.284138"
+        },
+        {
+          "name": "Kenya",
+          "domain": "businesslist.co.ke",
+          "url": "https://www.businesslist.co.ke",
+          "latitude": "-0.023559",
+          "longitude": "37.906193"
+        },
+        {
+          "name": "Lesotho",
+          "domain": "lesothoyp.com",
+          "url": "https://www.lesothoyp.com",
+          "latitude": "-29.609988",
+          "longitude": "28.233608"
+        },
+        {
+          "name": "Libya",
+          "domain": "libyayp.com",
+          "url": "https://www.libyayp.com",
+          "latitude": "26.3351",
+          "longitude": "17.228331"
+        },
+        {
+          "name": "Madagascar",
+          "domain": "madayp.com",
+          "url": "https://www.madayp.com",
+          "latitude": "-18.914872",
+          "longitude": "47.531612"
+        },
+        {
+          "name": "Malawi",
+          "domain": "malawiyp.com",
+          "url": "https://www.malawiyp.com",
+          "latitude": "-13.254308",
+          "longitude": "34.301525"
+        },
+        {
+          "name": "Mali",
+          "domain": "maliyp.com",
+          "url": "https://www.maliyp.com",
+          "latitude": "12.65",
+          "longitude": "-8"
+        },
+        {
+          "name": "Mauritania",
+          "domain": "mauritaniayp.com",
+          "url": "https://www.mauritaniayp.com",
+          "latitude": "18.083849",
+          "longitude": "-15.978844"
+        },
+        {
+          "name": "Mauritius",
+          "domain": "yelo.mu",
+          "url": "https://www.yelo.mu",
+          "latitude": "-20.165279",
+          "longitude": "57.49638"
+        },
+        {
+          "name": "Morocco",
+          "domain": "yelo.ma",
+          "url": "https://www.yelo.ma",
+          "latitude": "31.791702",
+          "longitude": "-7.09262"
+        },
+        {
+          "name": "Mozambique",
+          "domain": "mozambiqueyp.com",
+          "url": "https://www.mozambiqueyp.com",
+          "latitude": "-25.95",
+          "longitude": "32.583333"
+        },
+        {
+          "name": "Namibia",
+          "domain": "namibiayp.com",
+          "url": "https://www.namibiayp.com",
+          "latitude": "-22.95764",
+          "longitude": "18.49041"
+        },
+        {
+          "name": "Niger",
+          "domain": "nigeryp.com",
+          "url": "https://www.nigeryp.com",
+          "latitude": "13.513096",
+          "longitude": "2.113406"
+        },
+        {
+          "name": "Nigeria",
+          "domain": "businesslist.com.ng",
+          "url": "https://www.businesslist.com.ng",
+          "latitude": "9.0666667",
+          "longitude": "7.4833333"
+        },
+        {
+          "name": "Rwanda",
+          "domain": "rwandayp.com",
+          "url": "https://www.rwandayp.com",
+          "latitude": "-1.940278",
+          "longitude": "29.873888"
+        },
+        {
+          "name": "Senegal",
+          "domain": "yelu.sn",
+          "url": "https://www.yelu.sn",
+          "latitude": "14.497401",
+          "longitude": "-14.452362"
+        },
+        {
+          "name": "Seychelles",
+          "domain": "seychellesyp.com",
+          "url": "https://www.seychellesyp.com",
+          "latitude": "-4.6826693",
+          "longitude": "55.480396"
+        },
+        {
+          "name": "South Africa",
+          "domain": "yellosa.co.za",
+          "url": "https://www.yellosa.co.za",
+          "latitude": "-30.559482",
+          "longitude": "22.937506"
+        },
+        {
+          "name": "Sudan",
+          "domain": "sudanyp.com",
+          "url": "https://www.sudanyp.com",
+          "latitude": "12.862807",
+          "longitude": "30.217636"
+        },
+        {
+          "name": "Tanzania",
+          "domain": "tanzapages.com",
+          "url": "https://www.tanzapages.com",
+          "latitude": "-6.369028",
+          "longitude": "34.888822"
+        },
+        {
+          "name": "Togo",
+          "domain": "togoyp.com",
+          "url": "https://www.togoyp.com",
+          "latitude": "6.139378",
+          "longitude": "1.212586"
+        },
+        {
+          "name": "Tunisia",
+          "domain": "tunisiayp.com",
+          "url": "https://www.tunisiayp.com",
+          "latitude": "33.886917",
+          "longitude": "9.537499"
+        },
+        {
+          "name": "Uganda",
+          "domain": "yellow.ug",
+          "url": "https://www.yellow.ug",
+          "latitude": "0.3136111",
+          "longitude": "32.5811111"
+        },
+        {
+          "name": "Zambia",
+          "domain": "zambiayp.com",
+          "url": "https://www.zambiayp.com",
+          "latitude": "-13.133897",
+          "longitude": "27.849332"
+        },
+        {
+          "name": "Zimbabwe",
+          "domain": "zimbabweyp.com",
+          "url": "https://www.zimbabweyp.com",
+          "latitude": "-19.015438",
+          "longitude": "29.154857"
+        }
+      ]
+    },
+    {
+      "region": "Europe",
+      "countries": [
+        {
+          "name": "Albania",
+          "domain": "albaniayp.com",
+          "url": "https://www.albaniayp.com",
+          "latitude": "41.328803",
+          "longitude": "19.818312"
+        },
+        {
+          "name": "Austria",
+          "domain": "austriayp.com",
+          "url": "https://www.austriayp.com",
+          "latitude": "48.207988",
+          "longitude": "16.366523"
+        },
+        {
+          "name": "Belarus",
+          "domain": "yelo.by",
+          "url": "https://www.yelo.by",
+          "latitude": "53.906765",
+          "longitude": "27.555774"
+        },
+        {
+          "name": "Belgium",
+          "domain": "belgiumyp.com",
+          "url": "https://www.belgiumyp.com",
+          "latitude": "50.85034",
+          "longitude": "4.35171"
+        },
+        {
+          "name": "Croatia",
+          "domain": "croatiayp.com",
+          "url": "https://www.croatiayp.com",
+          "latitude": "45.753343",
+          "longitude": "15.989126"
+        },
+        {
+          "name": "Cyprus",
+          "domain": "cypindex.com",
+          "url": "https://www.cypindex.com",
+          "latitude": "35.126413",
+          "longitude": "33.429859"
+        },
+        {
+          "name": "Estonia",
+          "domain": "estoniayp.com",
+          "url": "https://www.estoniayp.com",
+          "latitude": "58.595272",
+          "longitude": "25.013607"
+        },
+        {
+          "name": "Finland",
+          "domain": "yellofi.com",
+          "url": "https://www.yellofi.com",
+          "latitude": "60.169845",
+          "longitude": "24.938551"
+        },
+        {
+          "name": "Iceland",
+          "domain": "yelu.is",
+          "url": "https://www.yelu.is",
+          "latitude": "64.142947",
+          "longitude": "-21.948557"
+        },
+        {
+          "name": "Ireland",
+          "domain": "irelandyp.com",
+          "url": "https://www.irelandyp.com",
+          "latitude": "53.349805",
+          "longitude": "-6.26031"
+        },
+        {
+          "name": "Lithuania",
+          "domain": "imoniukontaktai.lt",
+          "url": "https://www.imoniukontaktai.lt",
+          "latitude": "54.689386",
+          "longitude": "25.280024"
+        },
+        {
+          "name": "Luxembourg",
+          "domain": "luxyello.com",
+          "url": "https://www.luxyello.com",
+          "latitude": "49.815273",
+          "longitude": "6.129583"
+        },
+        {
+          "name": "Malta",
+          "domain": "maltayp.com",
+          "url": "https://www.maltayp.com",
+          "latitude": "35.937496",
+          "longitude": "14.375416"
+        },
+        {
+          "name": "Netherlands",
+          "domain": "yelu.nl",
+          "url": "https://www.yelu.nl",
+          "latitude": "52.132633",
+          "longitude": "5.291266"
+        },
+        {
+          "name": "Norway",
+          "domain": "yelono.com",
+          "url": "https://www.yelono.com",
+          "latitude": "60.472024",
+          "longitude": "8.468946"
+        },
+        {
+          "name": "Poland",
+          "domain": "polandyp.com",
+          "url": "https://www.polandyp.com",
+          "latitude": "52.229676",
+          "longitude": "21.012229"
+        },
+        {
+          "name": "Portugal",
+          "domain": "portugalyp.com",
+          "url": "https://www.portugalyp.com",
+          "latitude": "38.725299",
+          "longitude": "-9.150036"
+        },
+        {
+          "name": "Romania",
+          "domain": "romaniayp.com",
+          "url": "https://www.romaniayp.com",
+          "latitude": "45.943161",
+          "longitude": "24.96676"
+        },
+        {
+          "name": "Slovakia",
+          "domain": "slovakiayp.com",
+          "url": "https://www.slovakiayp.com",
+          "latitude": "48.669026",
+          "longitude": "19.699024"
+        },
+        {
+          "name": "Slovenia",
+          "domain": "sloveniayp.com",
+          "url": "https://www.sloveniayp.com",
+          "latitude": "46.151241",
+          "longitude": "14.995463"
+        },
+        {
+          "name": "Sweden",
+          "domain": "swedyello.com",
+          "url": "https://www.swedyello.com",
+          "latitude": "59.32893",
+          "longitude": "15.989126"
+        },
+        {
+          "name": "Switzerland",
+          "domain": "swissyello.com",
+          "url": "https://www.swissyello.com",
+          "latitude": "46.818188",
+          "longitude": "8.227512"
+        },
+        {
+          "name": "Turkey",
+          "domain": "turkishyello.com",
+          "url": "https://www.turkishyello.com",
+          "latitude": "38.963745",
+          "longitude": "35.243322"
+        },
+        {
+          "name": "United Kingdom",
+          "domain": "yelu.uk",
+          "url": "https://www.yelu.uk",
+          "latitude": "51.5001524",
+          "longitude": "-0.1262362"
+        }
+      ]
+    },
+    {
+      "region": "Australia",
+      "countries": [
+        {
+          "name": "Australia",
+          "domain": "australiayp.com",
+          "url": "https://www.australiayp.com",
+          "latitude": "-33.867487",
+          "longitude": "151.20699"
+        },
+        {
+          "name": "Fiji",
+          "domain": "fijiyp.com",
+          "url": "https://www.fijiyp.com",
+          "latitude": "-17.713371",
+          "longitude": "178.065032"
+        },
+        {
+          "name": "New Zealand",
+          "domain": "businesslist.nz",
+          "url": "https://www.businesslist.nz",
+          "latitude": "-40.900557",
+          "longitude": "174.885971"
+        },
+        {
+          "name": "Papua New Guinea",
+          "domain": "pngyp.com",
+          "url": "https://www.pngyp.com",
+          "latitude": "-6.314993",
+          "longitude": "143.95555"
+        }
+      ]
+    },
+    {
+      "region": "North America",
+      "countries": [
+        {
+          "name": "Bahamas",
+          "domain": "bahamasindex.com",
+          "url": "https://www.bahamasindex.com",
+          "latitude": "25.03428",
+          "longitude": "-77.39628"
+        },
+        {
+          "name": "Barbados",
+          "domain": "barbadosindex.com",
+          "url": "https://www.barbadosindex.com",
+          "latitude": "13.193887",
+          "longitude": "-59.543198"
+        },
+        {
+          "name": "Belize",
+          "domain": "yelu.bz",
+          "url": "https://www.yelu.bz",
+          "latitude": "17.505173",
+          "longitude": "-88.200286"
+        },
+        {
+          "name": "Cayman Islands",
+          "domain": "caymanlist.com",
+          "url": "https://www.caymanlist.com",
+          "latitude": "19.2833333",
+          "longitude": "-81.3666667"
+        },
+        {
+          "name": "Costa Rica",
+          "domain": "yelu.cr",
+          "url": "https://www.yelu.cr",
+          "latitude": "9.748917",
+          "longitude": "-83.753428"
+        },
+        {
+          "name": "Cuba",
+          "domain": "yellocu.com",
+          "url": "https://www.yellocu.com",
+          "latitude": "23.130407",
+          "longitude": "-82.382784"
+        },
+        {
+          "name": "Dominican Republic",
+          "domain": "yelu.do",
+          "url": "https://www.yelu.do",
+          "latitude": "18.735693",
+          "longitude": "-70.162651"
+        },
+        {
+          "name": "El Salvador",
+          "domain": "elsalvadoryp.com",
+          "url": "https://www.elsalvadoryp.com",
+          "latitude": "13.706881",
+          "longitude": "-89.20181"
+        },
+        {
+          "name": "Grenada",
+          "domain": "grenadaindex.com",
+          "url": "https://www.grenadaindex.com",
+          "latitude": "12.052868",
+          "longitude": "-61.752286"
+        },
+        {
+          "name": "Guadeloupe",
+          "domain": "guadeloupeindex.com",
+          "url": "https://www.guadeloupeindex.com",
+          "latitude": "16.250338",
+          "longitude": "-61.528595"
+        },
+        {
+          "name": "Guatemala",
+          "domain": "gtyello.com",
+          "url": "https://www.gtyello.com",
+          "latitude": "14.624795",
+          "longitude": "-90.532818"
+        },
+        {
+          "name": "Honduras",
+          "domain": "yelu.hn",
+          "url": "https://www.yelu.hn",
+          "latitude": "14.0833",
+          "longitude": "-87.2167"
+        },
+        {
+          "name": "Jamaica",
+          "domain": "jamaicaindex.com",
+          "url": "https://www.jamaicaindex.com",
+          "latitude": "18.109581",
+          "longitude": "-77.297508"
+        },
+        {
+          "name": "Martinique",
+          "domain": "martiniqueindex.com",
+          "url": "https://www.martiniqueindex.com",
+          "latitude": "14.610386",
+          "longitude": "-61.071933"
+        },
+        {
+          "name": "Mexico",
+          "domain": "yelo.com.mx",
+          "url": "https://www.yelo.com.mx",
+          "latitude": "19.4326077",
+          "longitude": "-99.133208"
+        },
+        {
+          "name": "Nicaragua",
+          "domain": "yelu.com.ni",
+          "url": "https://www.yelu.com.ni",
+          "latitude": "12.136389",
+          "longitude": "-86.251389"
+        },
+        {
+          "name": "Panama",
+          "domain": "yelupa.com",
+          "url": "https://www.yelupa.com",
+          "latitude": "8.9942689",
+          "longitude": "-79.518792"
+        },
+        {
+          "name": "Puerto Rico",
+          "domain": "puertoricoindex.com",
+          "url": "https://www.puertoricoindex.com",
+          "latitude": "18.220833",
+          "longitude": "-66.590149"
+        },
+        {
+          "name": "Saint Lucia",
+          "domain": "saintluciaindex.com",
+          "url": "https://www.saintluciaindex.com",
+          "latitude": "14.011066",
+          "longitude": "-60.989752"
+        },
+        {
+          "name": "Trinidad and Tobago",
+          "domain": "tntyellow.com",
+          "url": "https://www.tntyellow.com",
+          "latitude": "10.691803",
+          "longitude": "-61.222503"
+        }
+      ]
+    },
+    {
+      "region": "South America",
+      "countries": [
+        {
+          "name": "Argentina",
+          "domain": "arempresas.com",
+          "url": "https://www.arempresas.com",
+          "latitude": "-38.416097",
+          "longitude": "-63.616672"
+        },
+        {
+          "name": "Bolivia",
+          "domain": "boliviayp.com",
+          "url": "https://www.boliviayp.com",
+          "latitude": "-16.290154",
+          "longitude": "-63.588653"
+        },
+        {
+          "name": "Brazil",
+          "domain": "brazilyello.com",
+          "url": "https://www.brazilyello.com",
+          "latitude": "-14.235004",
+          "longitude": "-51.92528"
+        },
+        {
+          "name": "Chile",
+          "domain": "yelu.cl",
+          "url": "https://www.yelu.cl",
+          "latitude": "-35.675147",
+          "longitude": "-71.542969"
+        },
+        {
+          "name": "Colombia",
+          "domain": "yelu.com.co",
+          "url": "https://www.yelu.com.co",
+          "latitude": "4.570868",
+          "longitude": "-74.297333"
+        },
+        {
+          "name": "Ecuador",
+          "domain": "yelu.ec",
+          "url": "https://www.yelu.ec",
+          "latitude": "-1.831239",
+          "longitude": "-78.183406"
+        },
+        {
+          "name": "Guyana",
+          "domain": "guyanaindex.com",
+          "url": "https://www.guyanaindex.com",
+          "latitude": "6.810721",
+          "longitude": "-58.155563"
+        },
+        {
+          "name": "Paraguay",
+          "domain": "yeloparaguay.com",
+          "url": "https://www.yeloparaguay.com",
+          "latitude": "-23.442503",
+          "longitude": "-58.443832"
+        },
+        {
+          "name": "Peru",
+          "domain": "peruyello.com",
+          "url": "https://www.peruyello.com",
+          "latitude": "-9.189967",
+          "longitude": "-75.015152"
+        },
+        {
+          "name": "Suriname",
+          "domain": "surinamyp.com",
+          "url": "https://www.surinamyp.com",
+          "latitude": "5.823201",
+          "longitude": "-55.16788"
+        },
+        {
+          "name": "Uruguay",
+          "domain": "yelu.uy",
+          "url": "https://www.yelu.uy",
+          "latitude": "-32.522779",
+          "longitude": "-55.765835"
+        },
+        {
+          "name": "Venezuela",
+          "domain": "venezuelayello.com",
+          "url": "https://www.venezuelayello.com",
+          "latitude": "6.42375",
+          "longitude": "-66.58973"
+        }
+      ]
+    },
+    {
+      "region": "USA",
+      "countries": [
+        {
+          "name": "Florida",
+          "domain": "floridanegocio.com",
+          "url": "https://www.floridanegocio.com",
+          "latitude": "25.7845088",
+          "longitude": "-80.2247907"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_countries": 153,
+    "total_regions": 8,
+    "extraction_date": "2025-01-17",
+    "notes": "Updated country list extracted from Yello Pages global directory HTML. Includes corrected domains and coordinates for all listed countries and territories."
+  }
+}

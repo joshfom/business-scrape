@@ -58,6 +58,40 @@ export const scrapingAPI = {
   getStatusSummary: () => 
     api.get('/scraping/jobs/status-summary'),
 
+  // New enhanced job management endpoints
+  seedJobs: (overwrite: boolean = false) =>
+    api.post(`/scraping/seed-jobs?overwrite=${overwrite}`),
+  
+  getCountriesSummary: () =>
+    api.get('/scraping/countries-summary'),
+  
+  getSeededJobsStatus: () =>
+    api.get('/scraping/seeded-jobs-status'),
+  
+  searchJobs: (params: {
+    domain?: string;
+    status?: string;
+    region?: string;
+    country?: string;
+    sort_by?: string;
+    sort_order?: string;
+    skip?: number;
+    limit?: number;
+  }) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        queryParams.append(key, value.toString());
+      }
+    });
+    return api.get(`/scraping/jobs/search?${queryParams.toString()}`);
+  },
+  
+  updateJobSettings: (jobId: string, settings: {
+    concurrent_requests?: number;
+    request_delay?: number;
+  }) =>
+    api.put(`/scraping/jobs/${jobId}/settings`, settings),
 };
 
 // Businesses API
@@ -69,6 +103,7 @@ export const businessAPI = {
     city?: string;
     category?: string;
     search?: string;
+    job_id?: string;
   } = {}) => {
     const queryParams = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
@@ -91,6 +126,9 @@ export const businessAPI = {
   getBusinessesByCategory: () => 
     api.get('/businesses/stats/by-category'),
   
+  getBusinessesByRegion: () =>
+    api.get('/businesses/stats/by-region'),
+
   exportBusinesses: (params: {
     domain?: string;
     city?: string;
@@ -103,6 +141,25 @@ export const businessAPI = {
       }
     });
     return api.get(`/businesses/export/json?${queryParams.toString()}`, {
+      responseType: 'blob'
+    });
+  },
+
+  exportBusinessesEnhanced: (params: {
+    sort_by?: string;
+    sort_order?: string;
+    region?: string;
+    country?: string;
+    domain?: string;
+    format?: string;
+  } = {}) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        queryParams.append(key, value);
+      }
+    });
+    return api.get(`/businesses/export/enhanced?${queryParams.toString()}`, {
       responseType: 'blob'
     });
   },

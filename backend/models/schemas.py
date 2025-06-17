@@ -65,6 +65,13 @@ class ScrapingJob(BaseModel):
     current_city: Optional[str] = None
     current_page: int = 1
     errors: List[str] = Field(default_factory=list)
+    # New fields for seeded jobs
+    country: Optional[str] = None
+    region: Optional[str] = None
+    base_url: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    is_seeded: Optional[bool] = False
     
     class Config:
         populate_by_name = True
@@ -98,7 +105,53 @@ class DashboardStats(BaseModel):
     total_businesses: int
     businesses_today: int
     domains_configured: int
-    last_scrape: Optional[datetime] = None
+
+class JobSearchFilters(BaseModel):
+    domain: Optional[str] = None
+    status: Optional[str] = None
+    region: Optional[str] = None
+    country: Optional[str] = None
+    sort_by: str = "created_at"
+    sort_order: str = "desc"
+
+class JobSearchResults(BaseModel):
+    jobs: List[ScrapingJob]
+    total_count: int
+    has_more: bool
+
+class JobSettingsUpdate(BaseModel):
+    concurrent_requests: Optional[int] = None
+    request_delay: Optional[float] = None
+
+class CountrySummary(BaseModel):
+    name: str
+    domain: str
+    url: str
+
+class RegionSummary(BaseModel):
+    name: str
+    country_count: int
+    countries: List[CountrySummary]
+
+class CountriesOverview(BaseModel):
+    regions: List[RegionSummary]
+    total_countries: int
+
+class SeededJobsRegion(BaseModel):
+    name: str
+    total_jobs: int
+    completed: int
+    running: int
+    pending: int
+    failed: int
+    cancelled: int
+    paused: int
+    jobs: List[ScrapingJob]
+
+class SeededJobsStatus(BaseModel):
+    regions: List[SeededJobsRegion]
+    total_seeded_jobs: int
+    jobs: List[ScrapingJob]
 
 class ExportRequest(BaseModel):
     job_id: Optional[str] = None
