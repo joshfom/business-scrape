@@ -29,11 +29,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers with /api prefix (since nginx strips /api/ prefix)
-app.include_router(scraping.router, prefix="/api")
-app.include_router(businesses.router, prefix="/api")
-app.include_router(api_export_simple.router, prefix="/api")
-app.include_router(public_api.router, prefix="/api")
+# Include routers without /api prefix (nginx strips /api/ and forwards remaining path)
+app.include_router(scraping.router)
+app.include_router(businesses.router)
+app.include_router(api_export_simple.router)
+app.include_router(public_api.router)
 
 @app.on_event("startup")
 async def startup_event():
