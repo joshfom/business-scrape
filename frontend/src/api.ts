@@ -43,7 +43,7 @@ export const scrapingAPI = {
     api.get<ScrapingJob>(`/scraping/jobs/${jobId}/details`),
   
   getJobStats: (jobId: string) =>
-    api.get<JobStats>(`/businesses/jobs/${jobId}/stats`),
+    api.get<JobStats>(`/public/businesses/jobs/${jobId}/stats`),
   
   // Network resilience
   pauseAllJobs: () => 
@@ -111,23 +111,23 @@ export const businessAPI = {
         queryParams.append(key, value.toString());
       }
     });
-    return api.get<Business[]>(`/businesses?${queryParams.toString()}`);
+    return api.get<Business[]>(`/public/businesses?${queryParams.toString()}`);
   },
   
   getBusiness: (businessId: string) => 
-    api.get<Business>(`/businesses/${businessId}`),
+    api.get<Business>(`/public/businesses/${businessId}`),
   
   getBusinessStats: () => 
-    api.get('/businesses/stats/summary'),
+    api.get('/public/stats'),
   
   getBusinessesByCity: () => 
-    api.get('/businesses/stats/by-city'),
+    api.get('/public/businesses/stats/by-city'),
   
   getBusinessesByCategory: () => 
-    api.get('/businesses/stats/by-category'),
+    api.get('/public/businesses/stats/by-category'),
   
   getBusinessesByRegion: () =>
-    api.get('/businesses/stats/by-region'),
+    api.get('/public/businesses/stats/by-region'),
 
   exportBusinesses: (params: {
     domain?: string;
@@ -140,7 +140,7 @@ export const businessAPI = {
         queryParams.append(key, value);
       }
     });
-    return api.get(`/businesses/export/json?${queryParams.toString()}`, {
+    return api.get(`/public/businesses/export/json?${queryParams.toString()}`, {
       responseType: 'blob'
     });
   },
@@ -159,17 +159,17 @@ export const businessAPI = {
         queryParams.append(key, value);
       }
     });
-    return api.get(`/businesses/export/enhanced?${queryParams.toString()}`, {
+    return api.get(`/public/businesses/export/enhanced?${queryParams.toString()}`, {
       responseType: 'blob'
     });
   },
 
   // Export functions
   exportJobBusinesses: (jobId: string, exportRequest: ExportRequest) =>
-    api.post(`/businesses/export/job/${jobId}`, exportRequest, { responseType: 'blob' }),
+    api.post(`/public/businesses/export/job/${jobId}`, exportRequest, { responseType: 'blob' }),
   
   markBusinessesExported: (exportRequest: ExportRequest) =>
-    api.post('/businesses/mark-exported', exportRequest),
+    api.post('/public/businesses/mark-exported', exportRequest),
 };
 
 // API Export Management (Simplified)
