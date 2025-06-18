@@ -18,7 +18,7 @@ import {
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import { scrapingAPI, businessAPI } from '../api';
-import { DashboardStats, ScrapingJob } from '../types';
+import { DashboardStats, ScrapingJob, BusinessStats } from '../types';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
@@ -52,7 +52,7 @@ function StatCard({ title, value, icon, color = 'primary' }: StatCardProps) {
 }
 
 export default function Dashboard() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [stats, setStats] = useState<BusinessStats | null>(null);
   const [recentJobs, setRecentJobs] = useState<ScrapingJob[]>([]);
   const [businessStats, setBusinessStats] = useState<any>(null);
   const [cityData, setCityData] = useState<any[]>([]);
@@ -72,24 +72,26 @@ export default function Dashboard() {
       setError(null);
 
       const [
-        statsResponse,
         jobsResponse,
         businessStatsResponse,
-        cityResponse,
-        categoryResponse,
+        citiesResponse,
       ] = await Promise.all([
-        scrapingAPI.getStats(),
         scrapingAPI.listJobs(0, 5),
         businessAPI.getBusinessStats(),
-        businessAPI.getBusinessesByCity(),
-        businessAPI.getBusinessesByCategory(),
+        businessAPI.getCitiesWithCounts({ min_businesses: 1 }),
       ]);
 
-      setStats(statsResponse.data);
+      // Use business stats as main stats
+      setStats(businessStatsResponse.data);
       setRecentJobs(jobsResponse.data);
       setBusinessStats(businessStatsResponse.data);
-      setCityData(cityResponse.data.slice(0, 10));
-      setCategoryData(categoryResponse.data.slice(0, 10));
+      
+      // Transform cities data for charts
+      const cities = citiesResponse.data?.cities || [];
+      setCityData(cities.slice(0, 10));
+      
+      // For now, we don't have category data, so set empty array
+      setCategoryData([]);
     } catch (err) {
       setError('Failed to fetch dashboard data');
       console.error('Dashboard error:', err);
@@ -116,7 +118,7 @@ export default function Dashboard() {
     labels: cityData.map(item => item.city),
     datasets: [
       {
-        data: cityData.map(item => item.count),
+        data: cityData.map(item => item.business_count),
         backgroundColor: [
           '#FF6384',
           '#36A2EB',
@@ -174,26 +176,26 @@ export default function Dashboard() {
         }}
       >
         <StatCard
-          title="Total Jobs"
-          value={stats?.total_jobs || 0}
-          icon={<Schedule fontSize="large" />}
+          title="Total Businesses"
+          value={stats?.total_businesses?.toLocaleString() || 0}
+          icon={<Business fontSize="large" />}
           color="primary"
         />
         <StatCard
-          title="Active Jobs"
-          value={stats?.active_jobs || 0}
+          title="Cities"
+          value={stats?.unique_cities || 0}
           icon={<TrendingUp fontSize="large" />}
           color="success"
         />
         <StatCard
-          title="Total Businesses"
-          value={stats?.total_businesses.toLocaleString() || 0}
+          title="Countries"
+          value={stats?.unique_countries || 0}
           icon={<Business fontSize="large" />}
           color="info"
         />
         <StatCard
           title="Domains"
-          value={stats?.domains_configured || 0}
+          value={stats?.unique_domains || 0}
           icon={<Domain fontSize="large" />}
           color="warning"
         />

@@ -69,7 +69,7 @@ export default function Businesses() {
     try {
       setError(null);
       const params = {
-        skip: (page - 1) * ITEMS_PER_PAGE,
+        page: page,
         limit: ITEMS_PER_PAGE,
         ...Object.fromEntries(
           Object.entries(filters).filter(([_, value]) => value !== '')
@@ -77,14 +77,22 @@ export default function Businesses() {
       };
       
       const response = await businessAPI.listBusinesses(params);
-      // The API returns data directly, not in a 'data' property
-      const businessData = Array.isArray(response.data) ? response.data : (response.data as any)?.data || [];
-      setBusinesses(businessData);
       
-      // Get total count for better pagination
-      const totalResponse = await businessAPI.getBusinessStats();
-      const totalCount = totalResponse.data?.total_businesses || businessData.length;
-      setTotalPages(Math.max(1, Math.ceil(totalCount / ITEMS_PER_PAGE)));
+      // The API should return a structured response with data and pagination
+      const apiResponse = response.data as any;
+      
+      if (apiResponse && typeof apiResponse === 'object' && apiResponse.data) {
+        // New API format with pagination
+        setBusinesses(apiResponse.data || []);
+        setTotalPages(apiResponse.pagination?.total_pages || 1);
+      } else if (Array.isArray(apiResponse)) {
+        // Fallback to old format
+        setBusinesses(apiResponse);
+        setTotalPages(Math.ceil(apiResponse.length / ITEMS_PER_PAGE));
+      } else {
+        setBusinesses([]);
+        setTotalPages(1);
+      }
     } catch (err) {
       setError('Failed to fetch businesses');
       console.error('Businesses error:', err);
@@ -95,16 +103,29 @@ export default function Businesses() {
 
   const fetchUniqueValues = async () => {
     try {
-      const statsResponse = await businessAPI.getBusinessStats();
-      const stats = statsResponse.data;
+      // Get domains
+      const domainsResponse = await businessAPI.getDomains();
+      const domains = domainsResponse.data?.domains || [];
       
+      // Get cities
+      const citiesResponse = await businessAPI.getCitiesWithCounts();
+      const cities = citiesResponse.data?.cities?.map((c: any) => c.city) || [];
+      
+      // For categories, we'll need to extract them from business data or use a simpler approach
+      // For now, we'll leave categories empty as there's no dedicated endpoint
       setUniqueValues({
-        domains: stats.unique_domains || [],
-        cities: stats.unique_cities || [],
-        categories: stats.unique_categories || [],
+        domains: domains,
+        cities: cities.slice(0, 100), // Limit to first 100 cities for performance
+        categories: [], // Will be populated from business data if needed
       });
     } catch (err) {
       console.error('Error fetching unique values:', err);
+      // Set empty arrays to prevent map errors
+      setUniqueValues({
+        domains: [],
+        cities: [],
+        categories: [],
+      });
     }
   };
 

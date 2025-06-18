@@ -32,7 +32,7 @@ export const scrapingAPI = {
     api.get<ScrapingJob[]>(`/scraping/jobs?skip=${skip}&limit=${limit}`),
   
   getStats: () => 
-    api.get<DashboardStats>('/scraping/stats'),
+    api.get<DashboardStats>('/public/stats'),
   
   // Available domains
   getAvailableDomains: () =>
@@ -97,7 +97,7 @@ export const scrapingAPI = {
 // Businesses API
 export const businessAPI = {
   listBusinesses: (params: {
-    skip?: number;
+    page?: number;
     limit?: number;
     domain?: string;
     city?: string;
@@ -111,7 +111,7 @@ export const businessAPI = {
         queryParams.append(key, value.toString());
       }
     });
-    return api.get<Business[]>(`/public/businesses?${queryParams.toString()}`);
+    return api.get(`/public/businesses?${queryParams.toString()}`);
   },
   
   getBusiness: (businessId: string) => 
@@ -120,14 +120,20 @@ export const businessAPI = {
   getBusinessStats: () => 
     api.get('/public/stats'),
   
-  getBusinessesByCity: () => 
-    api.get('/public/businesses/stats/by-city'),
+  // Get cities with business counts
+  getCitiesWithCounts: (params: { country?: string; min_businesses?: number } = {}) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        queryParams.append(key, value.toString());
+      }
+    });
+    return api.get(`/public/cities?${queryParams.toString()}`);
+  },
   
-  getBusinessesByCategory: () => 
-    api.get('/public/businesses/stats/by-category'),
-  
-  getBusinessesByRegion: () =>
-    api.get('/public/businesses/stats/by-region'),
+  // Get available domains
+  getDomains: () =>
+    api.get('/public/domains'),
 
   exportBusinesses: (params: {
     domain?: string;

@@ -75,6 +75,15 @@ export interface DashboardStats {
   last_scrape?: string;
 }
 
+export interface BusinessStats {
+  total_businesses: number;
+  unique_cities: number;
+  unique_countries: number;
+  unique_categories: number;
+  unique_domains: number;
+  last_updated: string;
+}
+
 export interface CreateJobData {
   name: string;
   domains: string[];
